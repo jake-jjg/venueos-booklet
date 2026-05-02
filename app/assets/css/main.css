@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme {
+    --font-serif: "Georgia", ui-serif, serif;
+    --font-sans: "Public Sans", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --font-headline: "Georgia", ui-serif, serif;
+    --font-body: "Public Sans", system-ui, sans-serif;
+}
