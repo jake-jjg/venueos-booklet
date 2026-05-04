@@ -1,75 +1,55 @@
-# Nuxt Minimal Starter
+# VenueOS Booklet
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A Nuxt.js web app that gives wedding venues a customisable, branded front end for presenting their information to prospective clients. Venue owners can manage content through a built-in settings panel, while guests browse a clean, paginated booklet experience.
 
-## Setup
+## Features
 
-Make sure to install dependencies:
+- **Dynamic module pages** — content is driven by Supabase, with each venue module (e.g. About, Pricing, Gallery) rendered as its own page
+- **Settings panel** — manage modules, theme, typography, and design options from a dedicated settings layout
+- **Dark / light mode** — built-in colour mode toggle via Nuxt UI
+- **SEO ready** — per-page meta titles and descriptions using `useSeoMeta`, with a global title template derived from the venue name
+
+## Tech Stack
+
+| | |
+|---|---|
+| Framework | [Nuxt 4](https://nuxt.com) |
+| UI | [Nuxt UI 4](https://ui.nuxt.com) |
+| Database | [Supabase](https://supabase.com) |
+| Styling | [Tailwind CSS 4](https://tailwindcss.com) |
+| Language | TypeScript |
+
+## Getting Started
+
+### 1. Install dependencies
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+### 2. Configure environment variables
 
-Start the development server on `http://localhost:3000`:
+Create a `.env` file in the project root:
+
+```env
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+VENUE_ID=your-venue-id
+```
+
+### 3. Run the development server
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+The app will be available at `http://localhost:3000`.
 
-Build the application for production:
+## Scripts
 
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+| Command | Description |
+|---|---|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run generate` | Statically generate the site |
+| `npm run preview` | Preview the production build |
