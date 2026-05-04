@@ -54,6 +54,37 @@ const SATURATION_MULTIPLIERS = [
   0.15, 0.25, 0.45, 0.65, 0.85, 1.0, 1.0, 0.95, 0.85, 0.75, 0.65,
 ];
 
+/**
+ * Generates a full set of light + dark surface colors from the chosen
+ * background. Mirrors the stepped structure Nuxt UI uses internally:
+ * bg → muted → elevated → accented (progressively more defined).
+ */
+export function generateBackgroundScale(hex: string) {
+  const { h, s, l } = hexToHsl(hex);
+  const ls = Math.min(s, 20); // cap saturation so light surfaces stay neutral
+  const ds = Math.min(s * 0.15, 8); // very desaturated for dark surfaces
+
+  return {
+    light: {
+      bg: hex,
+      muted: hslToHex(h, ls, Math.max(l - 3, 0)),
+      elevated: hslToHex(h, ls, Math.max(l - 6, 0)),
+      accented: hslToHex(h, ls, Math.max(l - 12, 0)),
+    },
+    dark: {
+      bg: hslToHex(h, ds, 9),
+      muted: hslToHex(h, ds, 13),
+      elevated: hslToHex(h, ds, 13),
+      accented: hslToHex(h, ds, 20),
+    },
+  };
+}
+
+/** Convenience export for the color-scheme preview. */
+export function generateDarkBackground(hex: string): string {
+  return generateBackgroundScale(hex).dark.bg;
+}
+
 export function generateColorScale(hex: string): Record<number, string> {
   const { h, s } = hexToHsl(hex);
   return Object.fromEntries(
@@ -95,9 +126,35 @@ export const useTheme = () => {
       root.style.setProperty(`--color-secondary-${step}`, value);
     }
 
-    root.style.setProperty("--color-background", themeColors.background);
     root.style.setProperty("--ui-primary", primaryScale[500]!);
     root.style.setProperty("--ui-secondary", secondaryScale[500]!);
+
+    // Inject a single style tag covering all bg surface variables for both
+    // light and dark modes. Must target :root/.light AND .dark to override
+    // Nuxt UI's own declarations (verified from @nuxt/ui/dist/runtime/index.css).
+    const bgScale = generateBackgroundScale(themeColors.background);
+    let bgStyle = document.getElementById(
+      "dynamic-theme-bg",
+    ) as HTMLStyleElement | null;
+    if (!bgStyle) {
+      bgStyle = document.createElement("style");
+      bgStyle.id = "dynamic-theme-bg";
+      document.head.appendChild(bgStyle);
+    }
+    bgStyle.textContent = [
+      `:root, .light {`,
+      `  --ui-bg: ${bgScale.light.bg};`,
+      `  --ui-bg-muted: ${bgScale.light.muted};`,
+      `  --ui-bg-elevated: ${bgScale.light.elevated};`,
+      `  --ui-bg-accented: ${bgScale.light.accented};`,
+      `}`,
+      `.dark {`,
+      `  --ui-bg: ${bgScale.dark.bg};`,
+      `  --ui-bg-muted: ${bgScale.dark.muted};`,
+      `  --ui-bg-elevated: ${bgScale.dark.elevated};`,
+      `  --ui-bg-accented: ${bgScale.dark.accented};`,
+      `}`,
+    ].join("\n");
   };
 
   const fetchTheme = async () => {
@@ -150,5 +207,7 @@ export const useTheme = () => {
     fetchTheme,
     saveTheme,
     generateColorScale,
+    generateDarkBackground,
+    generateBackgroundScale,
   };
 };

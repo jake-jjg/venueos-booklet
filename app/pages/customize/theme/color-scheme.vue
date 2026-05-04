@@ -10,7 +10,15 @@ definePageMeta({
   },
 });
 
-const { colors, loading, saveTheme, generateColorScale } = useTheme();
+const {
+  colors,
+  loading,
+  saveTheme,
+  generateColorScale,
+  generateDarkBackground,
+} = useTheme();
+
+const darkBackground = computed(() => generateDarkBackground(draft.background));
 const toast = useToast();
 
 const draft = reactive({
@@ -108,7 +116,7 @@ const pickers = [
   <div class="w-full flex flex-col gap-6">
     <!-- Color Pickers -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <UCard v-for="picker in pickers" :key="picker.key">
+      <UCard variant="subtle" v-for="picker in pickers" :key="picker.key">
         <template #header>
           <div class="flex items-center gap-2">
             <UIcon :name="picker.icon" class="size-4 text-muted" />
@@ -117,12 +125,38 @@ const pickers = [
         </template>
 
         <div class="flex flex-col gap-3">
-          <!-- Large swatch — clicking opens Coloris on the input below -->
+          <!-- Large swatch — split light/dark for background, solid for others -->
           <div
             class="h-24 w-full rounded-lg border border-default cursor-pointer relative group overflow-hidden"
-            :style="{ backgroundColor: draft[picker.key] }"
             @click="openPicker(picker.key)"
           >
+            <!-- Background card: show light + dark halves -->
+            <template v-if="picker.key === 'background'">
+              <div class="flex h-full">
+                <div
+                  class="flex-1"
+                  :style="{ backgroundColor: draft.background }"
+                />
+                <div class="w-px bg-default/30" />
+                <div
+                  class="flex-1"
+                  :style="{ backgroundColor: darkBackground }"
+                />
+              </div>
+              <div
+                class="absolute inset-0 flex items-center justify-center gap-6 pointer-events-none"
+              >
+                <UIcon name="i-lucide-sun" class="size-4 text-black/40" />
+                <UIcon name="i-lucide-moon" class="size-4 text-white/60" />
+              </div>
+            </template>
+            <!-- Other cards: solid color -->
+            <template v-else>
+              <div
+                class="w-full h-full"
+                :style="{ backgroundColor: draft[picker.key] }"
+              />
+            </template>
             <div
               class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/15"
             >
@@ -131,6 +165,19 @@ const pickers = [
                 class="size-5 text-white drop-shadow"
               />
             </div>
+          </div>
+
+          <!-- Dark mode hex label for background card -->
+          <div
+            v-if="picker.key === 'background'"
+            class="flex items-center justify-between gap-2 text-xs text-muted"
+          >
+            <span class="flex items-center gap-1">
+              <UIcon name="i-lucide-sun" class="size-3" /> Light
+            </span>
+            <span class="flex items-center gap-1">
+              <UIcon name="i-lucide-moon" class="size-3" /> Dark auto-generated
+            </span>
           </div>
 
           <!-- Coloris-bound text input -->
@@ -154,7 +201,7 @@ const pickers = [
     </div>
 
     <!-- Shade Scale Preview -->
-    <UCard>
+    <UCard variant="subtle">
       <template #header>
         <h3 class="font-semibold text-sm">Generated Color Scales</h3>
       </template>
@@ -187,7 +234,7 @@ const pickers = [
     </UCard>
 
     <!-- Live Preview -->
-    <UCard>
+    <UCard variant="subtle">
       <template #header>
         <h3 class="font-semibold text-sm">Live Preview</h3>
       </template>

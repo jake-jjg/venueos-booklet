@@ -13,7 +13,7 @@ definePageMeta({
   },
 });
 
-const { module_loading, booklet_modules } = useVenue();
+const { booklet_modules } = useVenue();
 
 type ModuleRow = (typeof booklet_modules.value)[number];
 
@@ -114,7 +114,6 @@ useSortable(".my-table-tbody", booklet_modules, {
     <UTable
       :data="booklet_modules"
       :columns="columns"
-      :loading="module_loading"
       :ui="{ base: 'bg-elevated/50', tbody: 'my-table-tbody' }"
       class="border-default border rounded"
     >

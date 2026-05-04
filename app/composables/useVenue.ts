@@ -21,8 +21,6 @@ export const useVenue = () => {
     () => [],
   );
   const venue_info = useState<Venue[]>("venue_info", () => []);
-  const info_loading = useState("info_loading", () => true);
-  const module_loading = useState("module_loading", () => true);
 
   //Make a call to supabase to get the booklet modules
   const getbooklet_modules = async () => {
@@ -32,7 +30,6 @@ export const useVenue = () => {
       .eq("venue_id", config.public.venueId);
 
     booklet_modules.value = data ?? [];
-    module_loading.value = false;
   };
 
   //Get venue information from supabase
@@ -43,7 +40,6 @@ export const useVenue = () => {
       .eq("id", config.public.venueId);
 
     venue_info.value = data ?? [];
-    info_loading.value = false;
   };
 
   //Fetch all data
@@ -54,8 +50,6 @@ export const useVenue = () => {
   return {
     booklet_modules,
     venue_info,
-    info_loading,
-    module_loading,
     getbooklet_modules,
     getVenue_info,
     fetchVenueData,

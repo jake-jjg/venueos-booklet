@@ -1,20 +1,16 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from "@nuxt/ui";
-
 import { type ComputedRef } from "vue";
+
+const open = ref(true);
+const route = useRoute();
+const { themeReady } = useTheme();
+const { booklet_modules, venue_info } = useVenue();
 
 const props = defineProps<{
   title?: string;
   description?: string;
 }>();
-
-const open = ref(true);
-const route = useRoute();
-const { themeReady } = useTheme();
-
-// useState inside useVenue shares state — no extra fetches triggered
-const { booklet_modules, venue_info, info_loading, module_loading } =
-  useVenue();
 
 const moduleChildren: NavigationMenuItem[] = [
   {
@@ -103,21 +99,26 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
       }"
     >
       <template #header>
-        <UIcon name="i-logos-nuxt-icon" class="size-8" />
+        <ClientOnly>
+          <template #fallback>
+            <USkeleton class="size-8 rounded-md" />
+          </template>
+          <UIcon name="i-logos-nuxt-icon" class="size-8" />
+        </ClientOnly>
       </template>
-      <template v-if="module_loading">
-        <USkeleton class="h-8 w-full mb-0.5" />
-        <USkeleton class="h-8 w-full mb-0.5" />
-        <USkeleton class="h-8 w-full mb-0.5" />
-        <USkeleton class="h-8 w-full mb-0.5" />
-      </template>
-      <template v-else>
+      <ClientOnly>
+        <template #fallback>
+          <USkeleton class="h-8 w-full mb-0.5" />
+          <USkeleton class="h-8 w-full mb-0.5" />
+          <USkeleton class="h-8 w-full mb-0.5" />
+          <USkeleton class="h-8 w-full mb-0.5" />
+        </template>
         <UNavigationMenu
           :items="items"
           orientation="vertical"
           :ui="{ link: 'p-1.5 my-2 overflow-hidden' }"
         />
-      </template>
+      </ClientOnly>
     </USidebar>
     <main class="w-full flex flex-col justify-start items-start">
       <header
@@ -133,17 +134,22 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
           />
         </div>
         <div class="w-full">
-          <template v-if="info_loading">
-            <USkeleton class="size-10 w-50" />
-          </template>
-          <template v-else>
+          <ClientOnly>
+            <template #fallback>
+              <USkeleton class="h-7 w-48" />
+            </template>
             <div class="text-2xl font-headline w-full">Booklet Settings</div>
-          </template>
+          </ClientOnly>
         </div>
-        <UColorModeSelect />
+        <ClientOnly>
+          <template #fallback>
+            <USkeleton class="size-8 w-20 rounded-md shrink-0" />
+          </template>
+          <UColorModeSelect />
+        </ClientOnly>
       </header>
       <div class="flex items-center p-4 w-full">
-        <UCard class="w-full">
+        <UCard variant="outline" class="w-full">
           <template #header>
             <template v-if="!themeReady">
               <div class="flex justify-between items-center gap-2">

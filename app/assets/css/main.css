@@ -33,7 +33,7 @@
   --color-secondary-900: #4c1d95;
   --color-secondary-950: #2e1065;
 
-  /* Background */
+  /* Background — light mode */
   --color-background: #ffffff;
 }
 
@@ -48,6 +48,12 @@
 }
 
 @layer base {
+  body {
+    /* --ui-bg is overridden at runtime by useTheme for both light and dark */
+    background-color: var(--ui-bg);
+    transition: background-color 0.2s ease;
+  }
+
   button,
   [role="button"],
   select,

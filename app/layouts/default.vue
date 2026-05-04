@@ -1,18 +1,14 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from "@nuxt/ui";
 const route = useRoute();
+const open = ref(true);
+const isRootPath = computed(() => route.path === "/");
+const { themeReady } = useTheme();
+const { booklet_modules, venue_info } = useVenue();
 const props = defineProps<{
   title?: string;
   description?: string;
 }>();
-
-const open = ref(true);
-const isRootPath = computed(() => route.path === "/");
-const { themeReady } = useTheme();
-
-// useState inside useVenue shares state — no extra fetches triggered
-const { booklet_modules, venue_info, info_loading, module_loading } =
-  useVenue();
 
 // Map modules to navigation items
 const NavigationModules = computed(() =>
@@ -47,15 +43,20 @@ const items = computed<NavigationMenuItem[]>(() => [
       }"
     >
       <template #header>
-        <UIcon name="i-logos-nuxt-icon" class="size-8" />
+        <ClientOnly>
+          <template #fallback>
+            <USkeleton class="size-8 rounded-md" />
+          </template>
+          <UIcon name="i-logos-nuxt-icon" class="size-8" />
+        </ClientOnly>
       </template>
-      <template v-if="module_loading">
-        <USkeleton class="h-8 w-full mb-0.5" />
-        <USkeleton class="h-8 w-full mb-0.5" />
-        <USkeleton class="h-8 w-full mb-0.5" />
-        <USkeleton class="h-8 w-full mb-0.5" />
-      </template>
-      <template v-else>
+      <ClientOnly>
+        <template #fallback>
+          <USkeleton class="h-8 w-full mb-0.5" />
+          <USkeleton class="h-8 w-full mb-0.5" />
+          <USkeleton class="h-8 w-full mb-0.5" />
+          <USkeleton class="h-8 w-full mb-0.5" />
+        </template>
         <UNavigationMenu
           :items="items"
           orientation="vertical"
@@ -63,16 +64,21 @@ const items = computed<NavigationMenuItem[]>(() => [
           :ui="{ link: 'p-1.5 my-2 overflow-hidden' }"
           class="grow"
         />
-      </template>
-      <UButton
-        icon="i-lucide-calendar"
-        size="xl"
-        color="primary"
-        variant="solid"
-        class="justify-self-end"
-      >
-        Schedule a Tour
-      </UButton>
+      </ClientOnly>
+      <ClientOnly>
+        <template #fallback>
+          <USkeleton class="h-10 w-full rounded-md" />
+        </template>
+        <UButton
+          icon="i-lucide-calendar"
+          size="xl"
+          color="primary"
+          variant="solid"
+          class="justify-self-end"
+        >
+          Schedule a Tour
+        </UButton>
+      </ClientOnly>
     </USidebar>
     <main class="w-full flex flex-col justify-start items-start">
       <header
@@ -88,16 +94,21 @@ const items = computed<NavigationMenuItem[]>(() => [
           />
         </div>
         <div class="w-full">
-          <template v-if="info_loading">
-            <USkeleton class="size-10 w-50" />
-          </template>
-          <template v-else>
+          <ClientOnly>
+            <template #fallback>
+              <USkeleton class="h-7 w-48" />
+            </template>
             <div class="text-2xl font-headline w-full">
               {{ venue_info[0]?.name }}
             </div>
-          </template>
+          </ClientOnly>
         </div>
-        <UColorModeSelect />
+        <ClientOnly>
+          <template #fallback>
+            <USkeleton class="size-8 w-20 rounded-md shrink-0" />
+          </template>
+          <UColorModeSelect />
+        </ClientOnly>
       </header>
       <div class="flex flex-col items-start justify-start p-4 w-full">
         <template v-if="!isRootPath">
@@ -111,16 +122,22 @@ const items = computed<NavigationMenuItem[]>(() => [
             Back
           </UButton>
         </template>
-        <UCard class="w-full">
+        <UCard variant="outline" class="w-full">
           <template #header>
-            <div class="flex flex-col justify-center prose">
-              <h1 class="text-4xl font-headline mb-2">
-                {{ title }}
-              </h1>
-              <p class="text-lg font-body text-muted">
-                {{ description }}
-              </p>
-            </div>
+            <template v-if="!themeReady">
+              <USkeleton class="h-10 w-56 mb-2" />
+              <USkeleton class="h-5 w-80" />
+            </template>
+            <template v-else>
+              <div class="flex flex-col justify-center prose">
+                <h1 class="text-4xl font-headline mb-2">
+                  {{ title }}
+                </h1>
+                <p class="text-lg font-body text-muted">
+                  {{ description }}
+                </p>
+              </div>
+            </template>
           </template>
           <template v-if="!themeReady">
             <div class="flex flex-col gap-3">
