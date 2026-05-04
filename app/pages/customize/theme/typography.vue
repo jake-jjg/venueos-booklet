@@ -3,10 +3,15 @@ definePageMeta({
   layout: {
     name: "settings",
     props: {
-      title: "All Modules",
+      title: "Typography",
       description: "Customize your booklet's typography",
     },
   },
+});
+
+useSeoMeta({
+  title: "Typography",
+  description: "Customize your booklet's typography",
 });
 </script>
 

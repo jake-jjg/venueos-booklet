@@ -1,6 +1,11 @@
 <script setup lang="ts">
 definePageMeta({ layout: false });
 
+useSeoMeta({
+  title: "Edit Module: " + slug.charAt(0).toUpperCase() + slug.slice(1),
+  description: "Customize your booklet's modules",
+});
+
 const route = useRoute();
 const slug = route.params.slug as string;
 const title = "Edit Module: " + slug.charAt(0).toUpperCase() + slug.slice(1);

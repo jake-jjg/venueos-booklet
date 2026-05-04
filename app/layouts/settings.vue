@@ -152,7 +152,11 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
         </ClientOnly>
       </header>
       <div class="flex items-center p-4 w-full">
-        <UCard variant="outline" class="w-full">
+        <UCard
+          variant="outline"
+          class="w-full"
+          :ui="{ header: 'p-4 bg-elevated/50' }"
+        >
           <template #header>
             <template v-if="!themeReady">
               <div class="flex justify-between items-center gap-2">

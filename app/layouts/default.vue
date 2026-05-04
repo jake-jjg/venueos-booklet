@@ -121,7 +121,11 @@ const items = computed<NavigationMenuItem[]>(() => [
             Back
           </UButton>
         </template>
-        <UCard variant="outline" class="w-full">
+        <UCard
+          variant="outline"
+          class="w-full"
+          :ui="{ header: 'p-4 bg-elevated/50 ' }"
+        >
           <template #header>
             <template v-if="!themeReady">
               <USkeleton class="h-10 w-56 mb-2" />

@@ -11,6 +11,11 @@ definePageMeta({
   },
 });
 
+useSeoMeta({
+  title: "Color Scheme",
+  description: "Edit your booklet's color scheme",
+});
+
 const {
   colors,
   loading,

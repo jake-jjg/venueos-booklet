@@ -54,6 +54,11 @@ definePageMeta({
   },
 });
 
+useSeoMeta({
+  title: "Analytics Dashboard",
+  description: "Track your booklet performance and user engagement",
+});
+
 const getChangeColor = (change: number) => {
   return change >= 0 ? "text-green-600" : "text-red-600";
 };

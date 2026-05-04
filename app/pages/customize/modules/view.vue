@@ -13,6 +13,11 @@ definePageMeta({
   },
 });
 
+useSeoMeta({
+  title: "All Modules",
+  description: "Customize your booklet's modules",
+});
+
 const { booklet_modules, updateModulePositions } = useVenue();
 const toast = useToast();
 
@@ -88,26 +93,32 @@ const addNewItems: DropdownMenuItem[] = [
   {
     label: "Content",
     icon: "i-lucide-text-initial",
+    to: "/customize/modules/add-new?module_type=content",
   },
   {
     label: "Pricing",
     icon: "i-lucide-dollar-sign",
+    to: "/customize/modules/add-new?module_type=pricing",
   },
   {
     label: "Ameneties",
     icon: "i-lucide-list",
+    to: "/customize/modules/add-new?module_type=ameneties",
   },
   {
     label: "Gallery",
     icon: "i-lucide-images",
+    to: "/customize/modules/add-new?module_type=gallery",
   },
   {
     label: "FAQ",
     icon: "i-lucide-circle-question-mark",
+    to: "/customize/modules/add-new?module_type=faq",
   },
   {
     label: "Virtual Tours",
     icon: "i-lucide-binoculars",
+    to: "/customize/modules/add-new?module_type=virtual_tours",
   },
 ];
 
