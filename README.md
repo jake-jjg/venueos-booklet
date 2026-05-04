@@ -22,8 +22,8 @@ A Nuxt.js web app that gives wedding venues a customisable, branded front end fo
 ## Different Routes
 
 By default there are two routes. 
-- http://localhost:3000/
-- http://localhost:3000/customize/
+- [http://localhost:3000/](http://localhost:3000/)
+- [http://localhost:3000/customize/](http://localhost:3000/customize/)
 
 
 ## Getting Started
