@@ -1,23 +1,59 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
+/*
+  Default theme colors — overridden at runtime by useTheme.
+  To persist custom colors, add a `theme` JSONB column to your `venues` table:
+  ALTER TABLE venues ADD COLUMN theme jsonb;
+*/
+:root {
+  /* Primary (blue) */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
+
+  /* Secondary (violet) */
+  --color-secondary-50: #f5f3ff;
+  --color-secondary-100: #ede9fe;
+  --color-secondary-200: #ddd6fe;
+  --color-secondary-300: #c4b5fd;
+  --color-secondary-400: #a78bfa;
+  --color-secondary-500: #8b5cf6;
+  --color-secondary-600: #7c3aed;
+  --color-secondary-700: #6d28d9;
+  --color-secondary-800: #5b21b6;
+  --color-secondary-900: #4c1d95;
+  --color-secondary-950: #2e1065;
+
+  /* Background */
+  --color-background: #ffffff;
+}
+
 @theme {
-    --font-serif: "Georgia", ui-serif, serif;
-    --font-sans: "Public Sans", system-ui, sans-serif;
-    --font-mono: "JetBrains Mono", monospace;
-    --font-headline: "Georgia", ui-serif, serif;
-    --font-weight-headline: 400;
-    --font-body: "Public Sans", system-ui, sans-serif;
-    --font-weight-body: 400;
+  --font-serif: "Georgia", ui-serif, serif;
+  --font-sans: "Public Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-headline: "Georgia", ui-serif, serif;
+  --font-weight-headline: 400;
+  --font-body: "Public Sans", system-ui, sans-serif;
+  --font-weight-body: 400;
 }
 
 @layer base {
-    button,
-    [role="button"],
-    select,
-    checkbox,
-    radio {
-        @apply cursor-pointer;
-        @apply disabled:cursor-not-allowed;
-    }
+  button,
+  [role="button"],
+  select,
+  checkbox,
+  radio {
+    @apply cursor-pointer;
+    @apply disabled:cursor-not-allowed;
+  }
 }

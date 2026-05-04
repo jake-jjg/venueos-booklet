@@ -10,6 +10,7 @@ const props = defineProps<{
 
 const open = ref(true);
 const route = useRoute();
+const { themeReady } = useTheme();
 
 // useState inside useVenue shares state — no extra fetches triggered
 const { booklet_modules, venue_info, info_loading, module_loading } =
@@ -144,38 +145,52 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
       <div class="flex items-center p-4 w-full">
         <UCard class="w-full">
           <template #header>
-            <div class="flex justify-between items-center gap-2">
-              <div>
-                <h1 class="text-4xl font-headline mb-2">{{ title }}</h1>
-                <p class="text-lg font-body text-muted">
-                  {{ description }}
-                </p>
+            <template v-if="!themeReady">
+              <div class="flex justify-between items-center gap-2">
+                <div class="flex flex-col gap-2">
+                  <USkeleton class="h-10 w-48" />
+                  <USkeleton class="h-5 w-72" />
+                </div>
+                <USkeleton class="h-9 w-28 shrink-0" />
               </div>
-              <UTooltip text="Open your booklet in a new tab">
-                <UButton
-                  icon="i-lucide-eye"
-                  size="md"
-                  color="neutral"
-                  variant="outline"
-                  target="_blank"
-                >
-                  View Booklet
-                </UButton>
-              </UTooltip>
+            </template>
+            <template v-else>
+              <div class="flex justify-between items-center gap-2">
+                <div>
+                  <h1 class="text-4xl font-headline mb-2">{{ title }}</h1>
+                  <p class="text-lg font-body text-muted">
+                    {{ description }}
+                  </p>
+                </div>
+                <UTooltip text="Open your booklet in a new tab">
+                  <UButton
+                    icon="i-lucide-eye"
+                    size="md"
+                    color="neutral"
+                    variant="outline"
+                    target="_blank"
+                  >
+                    View Booklet
+                  </UButton>
+                </UTooltip>
+              </div>
+            </template>
+          </template>
+          <template v-if="!themeReady">
+            <div class="flex flex-col gap-3">
+              <USkeleton class="h-6 w-1/2" />
+              <USkeleton class="h-4 w-full" />
+              <USkeleton class="h-4 w-full" />
+              <USkeleton class="h-4 w-3/4" />
+              <div class="grid grid-cols-3 gap-3 pt-2">
+                <USkeleton class="h-28" />
+                <USkeleton class="h-28" />
+                <USkeleton class="h-28" />
+              </div>
             </div>
           </template>
-          <slot />
-          <template #footer>
-            <div class="flex justify-end gap-2">
-              <UButton
-                icon="i-lucide-save"
-                size="md"
-                color="info"
-                variant="solid"
-              >
-                Save
-              </UButton>
-            </div>
+          <template v-else>
+            <slot />
           </template>
         </UCard>
       </div>

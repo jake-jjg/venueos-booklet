@@ -8,6 +8,7 @@ const props = defineProps<{
 
 const open = ref(true);
 const isRootPath = computed(() => route.path === "/");
+const { themeReady } = useTheme();
 
 // useState inside useVenue shares state — no extra fetches triggered
 const { booklet_modules, venue_info, info_loading, module_loading } =
@@ -98,7 +99,7 @@ const items = computed<NavigationMenuItem[]>(() => [
         </div>
         <UColorModeSelect />
       </header>
-      <div class="flex flex-col items-center p-4 w-full">
+      <div class="flex flex-col items-start justify-start p-4 w-full">
         <template v-if="!isRootPath">
           <UButton
             icon="i-lucide-arrow-left"
@@ -121,7 +122,22 @@ const items = computed<NavigationMenuItem[]>(() => [
               </p>
             </div>
           </template>
-          <slot />
+          <template v-if="!themeReady">
+            <div class="flex flex-col gap-3">
+              <USkeleton class="h-6 w-1/2" />
+              <USkeleton class="h-4 w-full" />
+              <USkeleton class="h-4 w-full" />
+              <USkeleton class="h-4 w-3/4" />
+              <div class="grid grid-cols-3 gap-3 pt-2">
+                <USkeleton class="h-28" />
+                <USkeleton class="h-28" />
+                <USkeleton class="h-28" />
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <slot />
+          </template>
         </UCard>
       </div>
     </main>
