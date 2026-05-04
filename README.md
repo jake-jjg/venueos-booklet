@@ -19,6 +19,13 @@ A Nuxt.js web app that gives wedding venues a customisable, branded front end fo
 | Styling | [Tailwind CSS 4](https://tailwindcss.com) |
 | Language | TypeScript |
 
+## Different Routes
+
+By default there are two routes. 
+- '/'
+- '/customize/'
+
+
 ## Getting Started
 
 ### 1. Install dependencies

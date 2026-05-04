@@ -5,6 +5,7 @@ interface BookletModule {
   icon: string;
   description: string;
   created_at: string;
+  module_position: number;
 }
 
 interface Venue {
@@ -27,9 +28,22 @@ export const useVenue = () => {
     const { data } = await supabase
       .from("booklet_modules")
       .select()
-      .eq("venue_id", config.public.venueId);
+      .eq("venue_id", config.public.venueId)
+      .order("module_position", { ascending: true });
 
     booklet_modules.value = data ?? [];
+  };
+
+  // Persist a new module order by updating each row's module_position
+  const updateModulePositions = async (modules: BookletModule[]) => {
+    const updates = modules.map((m, i) => ({
+      id: m.id,
+      module_position: i + 1,
+    }));
+    const { error } = await supabase
+      .from("booklet_modules")
+      .upsert(updates, { onConflict: "id" });
+    return { error };
   };
 
   //Get venue information from supabase
@@ -53,5 +67,6 @@ export const useVenue = () => {
     getbooklet_modules,
     getVenue_info,
     fetchVenueData,
+    updateModulePositions,
   };
 };
