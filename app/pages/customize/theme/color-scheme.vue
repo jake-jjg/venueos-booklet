@@ -6,6 +6,7 @@ definePageMeta({
     name: "settings",
     props: {
       title: "Color Scheme",
+      description: "Edit your booklet's color scheme",
     },
   },
 });

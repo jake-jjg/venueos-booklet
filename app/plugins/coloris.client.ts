@@ -4,8 +4,9 @@ import "@melloware/coloris/dist/coloris.css";
 export default defineNuxtPlugin(() => {
   Coloris.init();
   Coloris({
-    themeMode: "auto",
+    theme: "polaroid",
     format: "hex",
+    formatToggle: true,
     alpha: false,
     focusInput: true,
     closeButton: true,

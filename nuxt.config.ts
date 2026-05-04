@@ -21,6 +21,7 @@ export default defineNuxtConfig({
       supabaseUrl: process.env.SUPABASE_URL,
       supabasePublishableKey: process.env.SUPABASE_PUBLISHABLE_KEY,
       venueId: process.env.VENUE_ID,
+      siteUrl: process.env.SITE_URL,
     },
   },
 });

@@ -163,7 +163,7 @@ useSortable(".my-table-tbody", booklet_modules, {
     <UTable
       :data="booklet_modules"
       :columns="columns"
-      :ui="{ base: 'bg-elevated/50', tbody: 'my-table-tbody' }"
+      :ui="{ tbody: 'my-table-tbody' }"
       class="border-default border rounded"
     >
       <template #drag-cell>
@@ -181,7 +181,7 @@ useSortable(".my-table-tbody", booklet_modules, {
       <template #actions-cell="{ row }">
         <UButton
           :to="`/customize/modules/${row.original.title.toLowerCase()}/`"
-          variant="subtle"
+          variant="outline"
           size="md"
           :disabled="reordering"
         >

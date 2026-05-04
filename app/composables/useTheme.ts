@@ -80,6 +80,30 @@ export function generateBackgroundScale(hex: string) {
   };
 }
 
+/**
+ * Generates subtle border colors tinted with the primary hue.
+ * Mirrors the three border levels Nuxt UI uses: border, muted, accented.
+ * Saturation is kept very low so borders stay understated.
+ */
+export function generateBorderScale(primaryHex: string) {
+  const { h, s } = hexToHsl(primaryHex);
+  const ls = Math.min(s * 0.08, 8); // near-neutral tint for light mode
+  const ds = Math.min(s * 0.12, 12); // near-neutral tint for dark mode
+
+  return {
+    light: {
+      border: hslToHex(h, ls, 88),
+      muted: hslToHex(h, ls, 91),
+      accented: hslToHex(h, ls, 82),
+    },
+    dark: {
+      border: hslToHex(h, ds, 22),
+      muted: hslToHex(h, ds, 18),
+      accented: hslToHex(h, ds, 28),
+    },
+  };
+}
+
 /** Convenience export for the color-scheme preview. */
 export function generateDarkBackground(hex: string): string {
   return generateBackgroundScale(hex).dark.bg;
@@ -133,6 +157,8 @@ export const useTheme = () => {
     // light and dark modes. Must target :root/.light AND .dark to override
     // Nuxt UI's own declarations (verified from @nuxt/ui/dist/runtime/index.css).
     const bgScale = generateBackgroundScale(themeColors.background);
+    const borderScale = generateBorderScale(themeColors.primary);
+
     let bgStyle = document.getElementById(
       "dynamic-theme-bg",
     ) as HTMLStyleElement | null;
@@ -147,12 +173,18 @@ export const useTheme = () => {
       `  --ui-bg-muted: ${bgScale.light.muted};`,
       `  --ui-bg-elevated: ${bgScale.light.elevated};`,
       `  --ui-bg-accented: ${bgScale.light.accented};`,
+      `  --ui-border: ${borderScale.light.border};`,
+      `  --ui-border-muted: ${borderScale.light.muted};`,
+      `  --ui-border-accented: ${borderScale.light.accented};`,
       `}`,
       `.dark {`,
       `  --ui-bg: ${bgScale.dark.bg};`,
       `  --ui-bg-muted: ${bgScale.dark.muted};`,
       `  --ui-bg-elevated: ${bgScale.dark.elevated};`,
       `  --ui-bg-accented: ${bgScale.dark.accented};`,
+      `  --ui-border: ${borderScale.dark.border};`,
+      `  --ui-border-muted: ${borderScale.dark.muted};`,
+      `  --ui-border-accented: ${borderScale.dark.accented};`,
       `}`,
     ].join("\n");
   };

@@ -72,7 +72,6 @@ const items = computed<NavigationMenuItem[]>(() => [
         <UButton
           icon="i-lucide-calendar"
           size="xl"
-          color="primary"
           variant="solid"
           class="justify-self-end"
         >
@@ -130,10 +129,10 @@ const items = computed<NavigationMenuItem[]>(() => [
             </template>
             <template v-else>
               <div class="flex flex-col justify-center prose">
-                <h1 class="text-4xl font-headline mb-2">
+                <h1 class="text-4xl font-headline mb-1">
                   {{ title }}
                 </h1>
-                <p class="text-lg font-body text-muted">
+                <p class="text-md font-body text-muted">
                   {{ description }}
                 </p>
               </div>

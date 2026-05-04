@@ -5,6 +5,9 @@ import { type ComputedRef } from "vue";
 const open = ref(true);
 const route = useRoute();
 const { themeReady } = useTheme();
+const {
+  public: { siteUrl },
+} = useRuntimeConfig();
 const { booklet_modules, venue_info } = useVenue();
 
 const props = defineProps<{
@@ -163,8 +166,8 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
             <template v-else>
               <div class="flex justify-between items-center gap-2">
                 <div>
-                  <h1 class="text-4xl font-headline mb-2">{{ title }}</h1>
-                  <p class="text-lg font-body text-muted">
+                  <h1 class="text-4xl font-headline mb-1">{{ title }}</h1>
+                  <p class="text-md font-body text-muted">
                     {{ description }}
                   </p>
                 </div>
@@ -174,6 +177,7 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
                     size="md"
                     color="neutral"
                     variant="outline"
+                    :to="siteUrl"
                     target="_blank"
                   >
                     View Booklet

@@ -18,8 +18,7 @@ definePageMeta({
 </script>
 
 <template>
-    <div class="flex-1 p-8 w-full">
-
+    <div class="flex-1 w-full">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <NuxtLink
                     v-for="module in booklet_modules"
@@ -32,8 +31,6 @@ definePageMeta({
                         :title="module.title"
                         :description="module.description"
                         variant="subtle"
-                        spotlight
-                        spotlight-color="primary"
                         reverse="true"
                         :ui="{ title: 'text-xl font-headline', description: 'text-md font-body' }"
                     >
