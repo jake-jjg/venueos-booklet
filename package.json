@@ -18,5 +18,9 @@
     "typescript": "^6.0.3",
     "vue": "^3.5.33",
     "vue-router": "^5.0.6"
+  },
+  "devDependencies": {
+    "@nuxt/a11y": "^1.0.0-alpha.1",
+    "@nuxt/eslint": "^1.15.2"
   }
 }

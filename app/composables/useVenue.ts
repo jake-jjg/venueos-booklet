@@ -1,14 +1,26 @@
-import { createClient } from "@supabase/supabase-js";
+interface BookletModule {
+  id: string;
+  venue_id: string;
+  title: string;
+  icon: string;
+  description: string;
+  created_at: string;
+}
+
+interface Venue {
+  id: string;
+  name: string;
+}
 
 export const useVenue = () => {
   const config = useRuntimeConfig();
-  const supabase = createClient(
-    config.public.supabaseUrl,
-    config.public.supabasePublishableKey,
-  );
+  const supabase = useSupabaseClient();
 
-  const booklet_modules = useState("booklet_modules", () => []);
-  const venue_info = useState("venue_info", () => []);
+  const booklet_modules = useState<BookletModule[]>(
+    "booklet_modules",
+    () => [],
+  );
+  const venue_info = useState<Venue[]>("venue_info", () => []);
   const info_loading = useState("info_loading", () => true);
   const module_loading = useState("module_loading", () => true);
 
@@ -19,7 +31,7 @@ export const useVenue = () => {
       .select()
       .eq("venue_id", config.public.venueId);
 
-    booklet_modules.value = data;
+    booklet_modules.value = data ?? [];
     module_loading.value = false;
   };
 
@@ -30,7 +42,7 @@ export const useVenue = () => {
       .select()
       .eq("id", config.public.venueId);
 
-    venue_info.value = data;
+    venue_info.value = data ?? [];
     info_loading.value = false;
   };
 

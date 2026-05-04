@@ -6,5 +6,18 @@
     --font-sans: "Public Sans", system-ui, sans-serif;
     --font-mono: "JetBrains Mono", monospace;
     --font-headline: "Georgia", ui-serif, serif;
+    --font-weight-headline: 400;
     --font-body: "Public Sans", system-ui, sans-serif;
+    --font-weight-body: 400;
+}
+
+@layer base {
+    button,
+    [role="button"],
+    select,
+    checkbox,
+    radio {
+        @apply cursor-pointer;
+        @apply disabled:cursor-not-allowed;
+    }
 }

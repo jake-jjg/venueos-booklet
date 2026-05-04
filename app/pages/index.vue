@@ -1,25 +1,69 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from "@nuxt/ui";
+// useState inside useVenue shares state — no extra fetches triggered
+const { info_loading, module_loading, booklet_modules } = useVenue();
 
-// Inject venue data from app.vue
-const venueData = inject<any>("venueData");
-const { booklet_modules, venue_info, info_loading, module_loading } = venueData;
+useSeoMeta({
+    title: "Overview",
+    description: "Your digital wedding & event booklet.",
+});
+
+definePageMeta({
+    layout: {
+        props: {
+            title: "Overview",
+            description: "Your digital wedding & event booklet.",
+        },
+    },
+});
 </script>
 
 <template>
-  <div class="flex-1 p-8 prose w-full items-stretch">
-    <template v-if="info_loading">
-      <USkeleton class="h-10 w-lg rounded mb-4" />
-      <USkeleton class="h-6 w-5xl rounded mb-8" />
-    </template>
+    <div class="flex-1 p-8 w-full">
+        <template v-if="info_loading">
+            <USkeleton class="h-10 w-lg rounded mb-4" />
+            <USkeleton class="h-6 w-5xl rounded mb-8" />
+        </template>
 
-    <template v-else>
-      <h2 class="text-4xl font-headline tracking-wide mb-4">Overview</h2>
-      <p class="font-body mb-8">
-        This is your digital wedding & event booklet. Fill this with your
-        content to help your brides better understand what it is you offer.
-      </p>
-    </template>
-    <USeparator />
-  </div>
+        <template v-else>
+            Content goes here
+        </template>
+
+        <USeparator class="mb-8" />
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <template v-if="module_loading">
+                <UCard v-for="i in 3" :key="i">
+                    <USkeleton class="h-6 w-3/4 mb-3" />
+                    <USkeleton class="h-4 w-full mb-2" />
+                    <USkeleton class="h-4 w-2/3" />
+                </UCard>
+            </template>
+
+            <template v-else>
+                <NuxtLink
+                    v-for="module in booklet_modules"
+                    :key="module.id"
+                    :to="`/${module.title.toLowerCase()}/`"
+                    class="group"
+                >
+                    <UPageCard
+                        class="h-full transition-shadow group-hover:shadow-md"
+                        :title="module.title"
+                        :description="module.description"
+                        spotlight
+                        spotlight-color="primary"
+                        reverse="true"
+                        :ui="{ title: 'text-xl font-headline' }"
+                    >
+                        <template v-if="module.cover_img">
+                            <img :src="module.cover_img" :alt="module.title"></img>
+                        </template>
+                        <template v-else>
+                            <img src="/placeholder.png" :alt="module.title"></img>
+                        </template>
+                    </UPageCard>
+                </NuxtLink>
+            </template>
+        </div>
+    </div>
 </template>
