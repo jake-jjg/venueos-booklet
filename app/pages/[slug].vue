@@ -21,20 +21,5 @@ useSeoMeta({
 </script>
 
 <template>
-    <div class="flex-1 p-8 prose w-full items-stretch">
-        <template v-if="info_loading">
-            <USkeleton class="h-10 w-lg rounded mb-4" />
-            <USkeleton class="h-6 w-5xl rounded mb-8" />
-        </template>
-
-        <template v-else>
-            <h1 class="text-4xl font-headline font-weight-headline mb-4">
-                {{ currentModule?.title }}
-            </h1>
-            <p class="font-body font-weight-body mb-8">
-                {{ currentModule?.description }}
-            </p>
-        </template>
-        <USeparator />
-    </div>
+    <div class="flex-1 p-8 prose w-full items-stretch">content goes here</div>
 </template>

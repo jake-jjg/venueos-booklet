@@ -89,8 +89,8 @@ const items = computed<NavigationMenuItem[]>(() => [
             <UCard class="w-full">
                 <template #header>
                     <div class="flex flex-col justify-center prose">
-                        <h1 class="text-4xl font-headline mb-4">{{ title }}</h1>
-                        <p class="text-sm font-medium text-muted">
+                        <h1 class="text-4xl font-headline mb-2">{{ title }}</h1>
+                        <p class="text-lg font-body text-muted">
                             {{ description }}
                         </p>
                     </div>
@@ -104,7 +104,7 @@ const items = computed<NavigationMenuItem[]>(() => [
                             color="primary"
                             variant="solid"
                         >
-                            Call to Action
+                            Schedule a Tour
                         </UButton>
                     </div>
                 </template>

@@ -82,7 +82,6 @@ const addNewItems: DropdownMenuItem[] = [
             <UButton
                 :to="`/modules/add-new`"
                 icon="i-lucide-square-plus"
-                variant="outline"
                 size="lg"
             >
                 Add New Module
@@ -97,11 +96,7 @@ const addNewItems: DropdownMenuItem[] = [
                 }"
                 class="justify-self-end self-end"
             >
-                <UButton
-                    variant="outline"
-                    icon="i-lucide-chevron-down"
-                    size="lg"
-                />
+                <UButton icon="i-lucide-chevron-down" size="lg" />
             </UDropdownMenu>
         </UFieldGroup>
 
@@ -119,7 +114,7 @@ const addNewItems: DropdownMenuItem[] = [
             <template #actions-cell="{ row }">
                 <UButton
                     :to="`/modules/${row.original.title.toLowerCase()}/`"
-                    variant="outline"
+                    variant="subtle"
                     size="md"
                 >
                     Edit Module
