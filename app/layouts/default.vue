@@ -86,29 +86,33 @@ const items = computed<NavigationMenuItem[]>(() => [
                 </div>
                 <UColorModeSelect />
             </header>
-            <UCard class="w-full">
-                <template #header>
-                    <div class="flex flex-col justify-center prose">
-                        <h1 class="text-4xl font-headline mb-2">{{ title }}</h1>
-                        <p class="text-lg font-body text-muted">
-                            {{ description }}
-                        </p>
-                    </div>
-                </template>
-                <slot />
-                <template #footer>
-                    <div class="flex justify-end gap-2">
-                        <UButton
-                            icon="i-lucide-calendar"
-                            size="xl"
-                            color="primary"
-                            variant="solid"
-                        >
-                            Schedule a Tour
-                        </UButton>
-                    </div>
-                </template>
-            </UCard>
+            <div class="flex items-center p-4 w-full">
+                <UCard class="w-full">
+                    <template #header>
+                        <div class="flex flex-col justify-center prose">
+                            <h1 class="text-4xl font-headline mb-2">
+                                {{ title }}
+                            </h1>
+                            <p class="text-lg font-body text-muted">
+                                {{ description }}
+                            </p>
+                        </div>
+                    </template>
+                    <slot />
+                    <template #footer>
+                        <div class="flex justify-end gap-2">
+                            <UButton
+                                icon="i-lucide-calendar"
+                                size="xl"
+                                color="primary"
+                                variant="solid"
+                            >
+                                Schedule a Tour
+                            </UButton>
+                        </div>
+                    </template>
+                </UCard>
+            </div>
         </main>
     </div>
 </template>

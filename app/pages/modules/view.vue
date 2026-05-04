@@ -77,7 +77,7 @@ const addNewItems: DropdownMenuItem[] = [
 </script>
 
 <template>
-    <div class="w-full flex flex-col p-8">
+    <div class="w-full flex flex-col">
         <UFieldGroup class="mb-4 justify-self-end self-end">
             <UButton
                 :to="`/modules/add-new`"
