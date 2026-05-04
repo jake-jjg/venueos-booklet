@@ -25,6 +25,10 @@ const columns: TableColumn<ModuleRow>[] = [
         header: "Description",
     },
     {
+        accessorKey: "content_type",
+        header: "Module Type",
+    },
+    {
         accessorKey: "created_at",
         header: "Date Created",
     },
