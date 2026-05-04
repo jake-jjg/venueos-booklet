@@ -9,13 +9,13 @@ setPageLayout("settings", { title });
 </script>
 
 <template>
-    <UButton
-        :to="`/modules/view`"
-        icon="i-lucide-arrow-left"
-        variant="outline"
-        size="sm"
-    >
-        Back to Modules
-    </UButton>
-    <div class="w-full"></div>
+  <UButton
+    :to="`/customize/modules/view`"
+    icon="i-lucide-arrow-left"
+    variant="outline"
+    size="sm"
+  >
+    Back to Modules
+  </UButton>
+  <div class="w-full"></div>
 </template>
