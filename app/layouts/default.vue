@@ -5,10 +5,7 @@ const open = ref(true);
 const isRootPath = computed(() => route.path === "/");
 const { themeReady } = useTheme();
 const { booklet_modules, venue_info } = useVenue();
-const props = defineProps<{
-  title?: string;
-  description?: string;
-}>();
+const { title, description } = usePageHeader();
 
 // Map modules to navigation items
 const NavigationModules = computed(() =>

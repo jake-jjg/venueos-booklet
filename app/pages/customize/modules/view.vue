@@ -4,14 +4,13 @@ import type { DropdownMenuItem } from "@nuxt/ui";
 import { useSortable } from "@vueuse/integrations/useSortable";
 
 definePageMeta({
-  layout: {
-    name: "settings",
-    props: {
-      title: "All Modules",
-      description: "Customize your booklet's modules",
-    },
-  },
+  layout: "settings",
 });
+
+const { setPageHeader } = usePageHeader();
+setPageHeader("All Modules", "Customize your booklet's modules");
+
+const { open: openAddModuleSlideover } = useAddModuleSlideover();
 
 useSeoMeta({
   title: "All Modules",
@@ -135,25 +134,12 @@ useSortable(".my-table-tbody", booklet_modules, {
   <div class="w-full flex flex-col">
     <UFieldGroup class="mb-4 justify-self-end self-end">
       <UButton
-        :to="`/customize/modules/add-new`"
         icon="i-lucide-square-plus"
         size="lg"
+        @click="openAddModuleSlideover"
       >
         Add New Module
       </UButton>
-
-      <UDropdownMenu
-        :items="addNewItems"
-        size="lg"
-        :content="{
-          align: 'end',
-          side: 'bottom',
-          sideOffset: 8,
-        }"
-        class="justify-self-end self-end"
-      >
-        <UButton icon="i-lucide-chevron-down" size="lg" />
-      </UDropdownMenu>
     </UFieldGroup>
 
     <Transition
@@ -191,7 +177,7 @@ useSortable(".my-table-tbody", booklet_modules, {
 
       <template #actions-cell="{ row }">
         <UButton
-          :to="`/customize/modules/${row.original.title.toLowerCase()}/`"
+          :to="`/customize/modules/${row.original.id}`"
           variant="outline"
           size="md"
           :disabled="reordering"

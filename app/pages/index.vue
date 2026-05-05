@@ -1,19 +1,17 @@
 <script setup lang="ts">
-// useState inside useVenue shares state — no extra fetches triggered
 const { booklet_modules } = useVenue();
+const { setPageHeader } = usePageHeader();
 
-useSeoMeta({
-    title: "Overview",
-    description: "Your digital wedding & event booklet.",
-});
+// Set page header
+setPageHeader("Overview", "Your digital wedding & event booklet.");
 
 definePageMeta({
-    layout: {
-        props: {
-            title: "Overview",
-            description: "Your digital wedding & event booklet.",
-        },
-    },
+  layout: "default",
+});
+
+useSeoMeta({
+  title: "Overview",
+  description: "Your digital wedding & event booklet.",
 });
 </script>
 

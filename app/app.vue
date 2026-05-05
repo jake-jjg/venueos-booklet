@@ -16,8 +16,20 @@ useHead({
   <UApp>
     <UTheme
       :ui="{
+        card: {
+          root: 'rounded-sm',
+        },
+        pageCard: {
+          root: 'rounded-sm',
+        },
+        sidebar: {
+          inner: 'rounded-sm',
+        },
+        select: {
+          base: 'rounded-sm pointer',
+        },
         button: {
-          base: 'rounded',
+          base: 'rounded-sm pointer',
         },
         input: {
           base: 'pointer',

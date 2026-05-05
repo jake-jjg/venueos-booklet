@@ -12,11 +12,58 @@ const { booklet_modules, venue_info } = useVenue();
 
 const { title, description } = usePageHeader();
 
+// Slideover state for add new module (shared via composable)
+const {
+  isOpen: addNewModuleOpen,
+  open: openAddModuleSlideover,
+  close: closeAddModuleSlideover,
+} = useAddModuleSlideover();
+
+const addNewModuleItems = [
+  {
+    label: "Content",
+    icon: "i-lucide-text-initial",
+    to: "/customize/modules/add-new?module_type=content",
+  },
+  {
+    label: "Pricing",
+    icon: "i-lucide-dollar-sign",
+    to: "/customize/modules/add-new?module_type=pricing",
+  },
+  {
+    label: "Amenities",
+    icon: "i-lucide-list",
+    to: "/customize/modules/add-new?module_type=amenities",
+  },
+  {
+    label: "Gallery",
+    icon: "i-lucide-images",
+    to: "/customize/modules/add-new?module_type=gallery",
+  },
+  {
+    label: "FAQ",
+    icon: "i-lucide-circle-question-mark",
+    to: "/customize/modules/add-new?module_type=faq",
+  },
+  {
+    label: "Virtual Tours",
+    icon: "i-lucide-binoculars",
+    to: "/customize/modules/add-new?module_type=virtual_tours",
+  },
+];
+
+const router = useRouter();
+
+function openAddNewModule(e: Event) {
+  e.preventDefault();
+  openAddModuleSlideover();
+}
+
 const moduleChildren: NavigationMenuItem[] = [
   {
     label: "Add New Module",
     icon: "i-lucide-square-plus",
-    to: "/customize/modules/add-new/",
+    onSelect: openAddNewModule,
     tooltip: { text: "Add New Module", content: { side: "right" } },
   },
   {
@@ -88,7 +135,7 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
 </script>
 
 <template>
-  <div class="flex flex-row">
+  <div class="flex flex-row" :key="route.path">
     <USidebar
       v-model:open="open"
       variant="floating"
@@ -117,7 +164,16 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
           :items="items"
           orientation="vertical"
           :ui="{ link: 'p-1.5 my-2 overflow-hidden' }"
+          class="grow"
         />
+        <UButton
+          icon="i-lucide-square-plus"
+          size="xl"
+          color="primary"
+          @click="openAddModuleSlideover"
+        >
+          Add New Module
+        </UButton>
       </ClientOnly>
     </USidebar>
     <main class="w-full flex flex-col justify-start items-start">
@@ -150,7 +206,7 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
       </header>
       <div class="flex items-center p-4 w-full">
         <UCard
-          variant="subtle"
+          variant="outline"
           class="w-full"
           :ui="{ header: 'p-4 bg-elevated/50' }"
         >
@@ -168,7 +224,7 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
               <div class="flex justify-between items-center gap-2">
                 <div>
                   <h1 class="text-4xl font-headline mb-1">{{ title }}</h1>
-                  <p class="text-md font-body text-muted">
+                  <p v-if="description" class="text-md font-body text-muted">
                     {{ description }}
                   </p>
                 </div>
@@ -206,5 +262,34 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
         </UCard>
       </div>
     </main>
+
+    <!-- Add New Module Slideover -->
+    <USlideover
+      v-model:open="addNewModuleOpen"
+      title="Select Module Type"
+      description="Choose a module type to get started"
+    >
+      <template #body>
+        <div class="flex flex-col gap-2">
+          <UButton
+            v-for="item in addNewModuleItems"
+            :key="item.label"
+            block
+            :icon="item.icon"
+            variant="outline"
+            size="lg"
+            class="justify-start"
+            @click="
+              () => {
+                closeAddModuleSlideover();
+                router.push(item.to);
+              }
+            "
+          >
+            {{ item.label }}
+          </UButton>
+        </div>
+      </template>
+    </USlideover>
   </div>
 </template>

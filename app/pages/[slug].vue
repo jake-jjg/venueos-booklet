@@ -1,31 +1,135 @@
 <script setup lang="ts">
-// useState inside useVenue shares state — no extra fetches triggered
+import { marked, type MarkedOptions } from "marked";
+
 const { booklet_modules } = useVenue();
 const route = useRoute();
+const { setPageHeader } = usePageHeader();
 
-const currentModule = computed(() =>
-  booklet_modules.value.find(
-    (item) => item.title.toLowerCase() === route.params.slug,
-  ),
-);
+// Helper to slugify title for comparison
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "");
+}
 
-const contentType = computed(() => currentModule.value?.content_type ?? null);
+const currentModule = computed(() => {
+  const slug = route.params.slug as string;
+  return booklet_modules.value.find(
+    (item) => slugify(item.title) === slug || item.title.toLowerCase() === slug,
+  );
+});
+
 const content = computed(() => currentModule.value?.content ?? null);
 
-// Per-type content accessors
-const textBody = computed(() => {
-  if (contentType.value !== "Text" || !content.value) return null;
-  return (content.value as Array<{ textContent: string }>)
-    .map((block) => block.textContent)
-    .filter(Boolean)
-    .join("\n");
+// Rendered HTML content
+const renderedContent = ref("");
+
+// Parse markdown to HTML helper
+function parseMarkdown(text: string): string {
+  if (!text) return "";
+  // Use marked.parse with sync option
+  const options: MarkedOptions = { async: false };
+  const result = marked.parse(text, options);
+  return typeof result === "string" ? result : "";
+}
+
+// Watch content and parse markdown
+watch(
+  content,
+  (newContent) => {
+    if (!newContent) {
+      renderedContent.value = "";
+      return;
+    }
+
+    let markdownText = "";
+
+    // If content is a string (Markdown), use it directly
+    if (typeof newContent === "string") {
+      markdownText = newContent;
+    }
+    // Handle legacy array format
+    else if (Array.isArray(newContent)) {
+      markdownText = newContent
+        .map(
+          (block: { textContent?: string; text?: string }) =>
+            block.textContent || block.text || "",
+        )
+        .filter(Boolean)
+        .join("\n\n");
+    }
+    // Handle TipTap JSON format (legacy)
+    else if (typeof newContent === "object" && newContent !== null) {
+      const typedContent = newContent as {
+        type?: string;
+        content?: unknown[];
+      };
+      if (typedContent.type === "doc" && Array.isArray(typedContent.content)) {
+        markdownText = extractTextFromNodes(typedContent.content);
+      }
+    }
+
+    renderedContent.value = parseMarkdown(markdownText);
+  },
+  { immediate: true },
+);
+
+// Helper to extract text from TipTap JSON nodes
+function extractTextFromNodes(nodes: unknown[]): string {
+  const lines: string[] = [];
+
+  for (const node of nodes) {
+    if (typeof node !== "object" || node === null) continue;
+
+    const typedNode = node as {
+      type?: string;
+      content?: unknown[];
+      text?: string;
+      attrs?: { level?: number };
+    };
+
+    if (typedNode.type === "paragraph" && typedNode.content) {
+      const text = typedNode.content
+        .map((child) =>
+          typeof child === "object" && child !== null && "text" in child
+            ? (child as { text: string }).text
+            : "",
+        )
+        .join("");
+      lines.push(text);
+    } else if (typedNode.type === "heading" && typedNode.content) {
+      const level = typedNode.attrs?.level || 1;
+      const text = typedNode.content
+        .map((child) =>
+          typeof child === "object" && child !== null && "text" in child
+            ? (child as { text: string }).text
+            : "",
+        )
+        .join("");
+      lines.push("#".repeat(level) + " " + text);
+    } else if (typedNode.type === "text" && typedNode.text) {
+      lines.push(typedNode.text);
+    }
+  }
+
+  return lines.join("\n\n");
+}
+
+// Computed title and description for the layout
+const pageTitle = computed(() => currentModule.value?.title ?? "Not Found");
+const pageDescription = computed(() => currentModule.value?.description ?? "");
+
+// Pass title and description to layout via composable
+setPageHeader(pageTitle, pageDescription);
+
+// Layout
+definePageMeta({
+  layout: "default",
 });
 
-setPageLayout("default", {
-  title: currentModule.value?.title,
-  description: currentModule.value?.description,
-});
-
+// SEO meta
 useSeoMeta({
   title: () => currentModule.value?.title ?? "",
   description: () => currentModule.value?.description ?? "",
@@ -33,21 +137,43 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="flex-1 p-8 prose w-full">
-    <!-- Text module -->
-    <template v-if="contentType === 'Text'">
-      <p v-if="textBody">{{ textBody }}</p>
-      <p v-else class="text-muted">No text content yet.</p>
+  <div class="w-full">
+    <!-- Module not found -->
+    <template v-if="!currentModule">
+      <div class="text-center py-12">
+        <UIcon
+          name="i-lucide-file-question"
+          class="w-12 h-12 text-muted mx-auto mb-4"
+        />
+        <h2 class="text-xl font-semibold mb-2">Module Not Found</h2>
+        <p class="text-muted mb-4">
+          The page you're looking for doesn't exist.
+        </p>
+        <UButton to="/" variant="outline" icon="i-lucide-home">
+          Go Home
+        </UButton>
+      </div>
     </template>
 
-    <!-- Fallback for unhandled content types -->
-    <template v-else-if="contentType">
-      <p class="text-muted">{{ contentType }} rendering coming soon.</p>
-    </template>
-
-    <!-- No module or no content type set -->
+    <!-- Module content -->
     <template v-else>
-      <p class="text-muted">No content yet.</p>
+      <div class="prose prose-lg dark:prose-invert max-w-none p-4">
+        <!-- Rendered content -->
+        <template v-if="renderedContent">
+          <div v-html="renderedContent" />
+        </template>
+
+        <!-- No content yet -->
+        <template v-else>
+          <div class="text-center py-12 text-muted">
+            <UIcon
+              name="i-lucide-file-text"
+              class="w-10 h-10 mx-auto mb-3 opacity-50"
+            />
+            <p>No content has been added to this module yet.</p>
+          </div>
+        </template>
+      </div>
     </template>
   </div>
 </template>

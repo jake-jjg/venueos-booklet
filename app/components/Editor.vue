@@ -19,9 +19,10 @@ import EditorLinkPopover from "./EditorLinkPopover.vue";
 
 const editorRef = useTemplateRef("editorRef");
 
-const value = ref(`# Write Your Content Here
-**This** is where *your content* goes...
-`);
+// Use defineModel for proper v-model binding with parent components
+const value = defineModel<string>({
+  default: "",
+});
 
 const {
   extension: completionExtension,
@@ -758,7 +759,7 @@ const emojiItems: EditorEmojiMenuItem[] = gitHubEmojis.filter(
           dark: 'material-theme-palenight',
         },
       }),
-      completionExtension,
+      ...(completionExtension ? [completionExtension] : []),
     ]"
     :handlers="customHandlers"
     placeholder="Write, type '/' for commands..."
