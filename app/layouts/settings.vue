@@ -150,7 +150,7 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
       </header>
       <div class="flex items-center p-4 w-full">
         <UCard
-          variant="outline"
+          variant="subtle"
           class="w-full"
           :ui="{ header: 'p-4 bg-elevated/50' }"
         >

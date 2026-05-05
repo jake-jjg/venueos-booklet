@@ -19,15 +19,25 @@ useSeoMeta({
 </script>
 
 <template>
+  <UFormField
+    label="Title"
+    help="Tell us what we should call this module."
+    required
+    size="xl"
+    class="w-full mb-4"
+  >
+    <UInput v-model="input" placeholder="Enter a Title" />
+  </UFormField>
 
-  <template v-if="moduleType == 'content'">
-    <Editor />
-  </template>
+  <UCard class="mb-4">
+    <template v-if="moduleType == 'content'">
+      <Editor />
+    </template>
 
-  <template v-else>
-    <div class="w-full">Add a new {{ moduleType }} module.</div>
-  </template>
-  
+    <template v-else>
+      <div class="w-full">Add a new {{ moduleType }} module.</div>
+    </template>
+  </UCard>
   <!-- Save Bar -->
   <div class="flex items-center justify-between pt-2">
     <UButton

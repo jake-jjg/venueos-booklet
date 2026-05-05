@@ -122,7 +122,7 @@ const items = computed<NavigationMenuItem[]>(() => [
           </UButton>
         </template>
         <UCard
-          variant="outline"
+          variant="subtle"
           class="w-full"
           :ui="{ header: 'p-4 bg-elevated/50 ' }"
         >

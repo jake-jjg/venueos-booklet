@@ -30,8 +30,8 @@ definePageMeta({
                         class="h-full transition-shadow group-hover:shadow-md"
                         :title="module.title"
                         :description="module.description"
-                        variant="subtle"
                         reverse="true"
+                        spotlight
                         :ui="{ title: 'text-xl font-headline', description: 'text-md font-body' }"
                     >
                         <template v-if="module.cover_img">
