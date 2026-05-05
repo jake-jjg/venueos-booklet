@@ -12,7 +12,14 @@ export default defineNuxtConfig({
   modules: ["@nuxt/ui", "@nuxt/eslint", "@nuxt/a11y"],
   vite: {
     optimizeDeps: {
-      include: ["sortablejs"],
+      include: [
+        "sortablejs",
+        "@nuxt/ui > prosemirror-state",
+        "@nuxt/ui > prosemirror-transform",
+        "@nuxt/ui > prosemirror-model",
+        "@nuxt/ui > prosemirror-view",
+        "@nuxt/ui > prosemirror-gapcursor",
+      ],
     },
   },
   css: ["~/assets/css/main.css"],

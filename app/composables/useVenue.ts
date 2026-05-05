@@ -6,6 +6,8 @@ interface BookletModule {
   description: string;
   created_at: string;
   module_position: number;
+  content: Array<Record<string, unknown>> | null;
+  content_type: string;
 }
 
 interface Venue {

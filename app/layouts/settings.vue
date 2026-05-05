@@ -10,10 +10,7 @@ const {
 } = useRuntimeConfig();
 const { booklet_modules, venue_info } = useVenue();
 
-const props = defineProps<{
-  title?: string;
-  description?: string;
-}>();
+const { title, description } = usePageHeader();
 
 const moduleChildren: NavigationMenuItem[] = [
   {
