@@ -200,7 +200,7 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
                 </UButton>
             </ClientOnly>
         </USidebar>
-        <main class="w-full flex flex-col justifystretch items-strech pl-4">
+        <main class="w-full flex flex-col justify-stretch items-strech pl-4">
             <div class="flex items-center w-full">
                 <UCard
                     variant="soft"
