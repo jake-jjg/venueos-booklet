@@ -1,22 +1,19 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: {
-    name: "settings",
-    props: {
-      title: "Typography",
-      description: "Customize your booklet's typography",
-    },
-  },
+    layout: "settings",
 });
 
+const { setPageHeader } = usePageHeader();
+setPageHeader("Typography", "Customize your booklet's typography");
+
 useSeoMeta({
-  title: "Typography",
-  description: "Customize your booklet's typography",
+    title: "Typography",
+    description: "Customize your booklet's typography",
 });
 </script>
 
 <template>
-  <div class="w-full">
-    <h1 class="text-4xl font-headline mb-4">General Settings Go Here</h1>
-  </div>
+    <div class="w-full">
+        <h1 class="text-4xl font-headline mb-4">General Settings Go Here</h1>
+    </div>
 </template>

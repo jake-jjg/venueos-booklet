@@ -4,43 +4,43 @@ const showPricing = ref(false);
 const columns = ref(3);
 
 definePageMeta({
-  layout: {
-    name: "settings",
-    props: {
-      title: "General Settings",
-      description: "Make adjustments to your venue booklet settings",
-    },
-  },
+    layout: "settings",
 });
 
+const { setPageHeader } = usePageHeader();
+setPageHeader(
+    "General Settings",
+    "Make adjustments to your venue booklet settings",
+);
+
 useSeoMeta({
-  title: "General Settings",
-  description: "Make adjustments to your venue booklet settings",
+    title: "General Settings",
+    description: "Make adjustments to your venue booklet settings",
 });
 </script>
 
 <template>
-  <div class="w-full]">
-    <h3 class="text-2xl font-headline mb-4">Section Heading</h3>
-    <SettingItem
-      title="Enable notifications"
-      description="Send email alerts for new bookings"
-      v-model="notificationsEnabled"
-    />
-    <SettingItem
-      title="Show pricing"
-      description="Display pricing on booking pages"
-      variant="checkbox"
-      v-model="showPricing"
-    />
-    <SettingItem
-      title="Gallery columns"
-      description="Number of columns in the gallery"
-      variant="slider"
-      :min="1"
-      :max="6"
-      :step="1"
-      v-model="columns"
-    />
-  </div>
+    <div class="w-full]">
+        <h3 class="text-2xl font-headline mb-4">Section Heading</h3>
+        <SettingItem
+            title="Enable notifications"
+            description="Send email alerts for new bookings"
+            v-model="notificationsEnabled"
+        />
+        <SettingItem
+            title="Show pricing"
+            description="Display pricing on booking pages"
+            variant="checkbox"
+            v-model="showPricing"
+        />
+        <SettingItem
+            title="Gallery columns"
+            description="Number of columns in the gallery"
+            variant="slider"
+            :min="1"
+            :max="6"
+            :step="1"
+            v-model="columns"
+        />
+    </div>
 </template>

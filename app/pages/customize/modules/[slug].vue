@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: "settings",
+    layout: "settings",
 });
 
 const route = useRoute();
@@ -27,306 +27,311 @@ const originalContent = ref("");
 
 // Track dirty state
 const isDirty = computed(() => {
-  return (
-    title.value !== originalTitle.value ||
-    description.value !== originalDescription.value ||
-    icon.value !== originalIcon.value ||
-    content.value !== originalContent.value
-  );
+    return (
+        title.value !== originalTitle.value ||
+        description.value !== originalDescription.value ||
+        icon.value !== originalIcon.value ||
+        content.value !== originalContent.value
+    );
 });
 
-// Computed title for header
+// Computed title and description for header — use stable fetched values, not form refs
 const pageTitle = computed(() => `Edit Module: ${title.value || "Loading..."}`);
+const pageHeaderDescription = computed(() => originalDescription.value);
 
 // Set page header
-setPageHeader(pageTitle, description);
+setPageHeader(pageTitle, pageHeaderDescription);
 
 // Fetch module
 const {
-  data: module,
-  pending,
-  error,
+    data: module,
+    pending,
+    error,
 } = await useAsyncData(`module-${slug}`, async () => {
-  // Try to find in cached state first
-  let foundModule = booklet_modules.value.find((m) => m.id === slug);
+    // Try to find in cached state first
+    let foundModule = booklet_modules.value.find((m) => m.id === slug);
 
-  if (!foundModule) {
-    // Fetch from Supabase
-    const { data, error } = await supabase
-      .from("booklet_modules")
-      .select()
-      .eq("id", slug)
-      .single();
+    if (!foundModule) {
+        // Fetch from Supabase
+        const { data, error } = await supabase
+            .from("booklet_modules")
+            .select()
+            .eq("id", slug)
+            .single();
 
-    if (error) throw error;
-    foundModule = data;
-  }
+        if (error) throw error;
+        foundModule = data;
+    }
 
-  return foundModule;
+    return foundModule;
 });
 
 // Helper to extract markdown content from various formats
 function extractMarkdownContent(rawContent: unknown): string {
-  if (!rawContent) return "";
+    if (!rawContent) return "";
 
-  // If it's already a string (Markdown), return it
-  if (typeof rawContent === "string") {
-    return rawContent;
-  }
-
-  // If it's a TipTap JSON object with a text representation
-  if (typeof rawContent === "object" && rawContent !== null) {
-    // Handle array of blocks (old format)
-    if (Array.isArray(rawContent)) {
-      return rawContent
-        .map(
-          (block: { textContent?: string; text?: string }) =>
-            block.textContent || block.text || "",
-        )
-        .filter(Boolean)
-        .join("\n\n");
+    // If it's already a string (Markdown), return it
+    if (typeof rawContent === "string") {
+        return rawContent;
     }
 
-    // Handle TipTap JSON format
-    const content = rawContent as { type?: string; content?: unknown[] };
-    if (content.type === "doc" && Array.isArray(content.content)) {
-      // Extract text from TipTap JSON structure
-      return extractTextFromTipTapJson(content.content);
-    }
-  }
+    // If it's a TipTap JSON object with a text representation
+    if (typeof rawContent === "object" && rawContent !== null) {
+        // Handle array of blocks (old format)
+        if (Array.isArray(rawContent)) {
+            return rawContent
+                .map(
+                    (block: { textContent?: string; text?: string }) =>
+                        block.textContent || block.text || "",
+                )
+                .filter(Boolean)
+                .join("\n\n");
+        }
 
-  return "";
+        // Handle TipTap JSON format
+        const content = rawContent as { type?: string; content?: unknown[] };
+        if (content.type === "doc" && Array.isArray(content.content)) {
+            // Extract text from TipTap JSON structure
+            return extractTextFromTipTapJson(content.content);
+        }
+    }
+
+    return "";
 }
 
 // Recursively extract text from TipTap JSON content
 function extractTextFromTipTapJson(nodes: unknown[]): string {
-  const lines: string[] = [];
+    const lines: string[] = [];
 
-  for (const node of nodes) {
-    if (typeof node !== "object" || node === null) continue;
+    for (const node of nodes) {
+        if (typeof node !== "object" || node === null) continue;
 
-    const typedNode = node as {
-      type?: string;
-      content?: unknown[];
-      text?: string;
-      attrs?: { level?: number };
-    };
+        const typedNode = node as {
+            type?: string;
+            content?: unknown[];
+            text?: string;
+            attrs?: { level?: number };
+        };
 
-    if (typedNode.type === "paragraph" && typedNode.content) {
-      const text = typedNode.content
-        .map((child) =>
-          typeof child === "object" && child !== null && "text" in child
-            ? (child as { text: string }).text
-            : "",
-        )
-        .join("");
-      lines.push(text);
-    } else if (typedNode.type === "heading" && typedNode.content) {
-      const level = typedNode.attrs?.level || 1;
-      const text = typedNode.content
-        .map((child) =>
-          typeof child === "object" && child !== null && "text" in child
-            ? (child as { text: string }).text
-            : "",
-        )
-        .join("");
-      lines.push("#".repeat(level) + " " + text);
-    } else if (typedNode.type === "text" && typedNode.text) {
-      lines.push(typedNode.text);
+        if (typedNode.type === "paragraph" && typedNode.content) {
+            const text = typedNode.content
+                .map((child) =>
+                    typeof child === "object" &&
+                    child !== null &&
+                    "text" in child
+                        ? (child as { text: string }).text
+                        : "",
+                )
+                .join("");
+            lines.push(text);
+        } else if (typedNode.type === "heading" && typedNode.content) {
+            const level = typedNode.attrs?.level || 1;
+            const text = typedNode.content
+                .map((child) =>
+                    typeof child === "object" &&
+                    child !== null &&
+                    "text" in child
+                        ? (child as { text: string }).text
+                        : "",
+                )
+                .join("");
+            lines.push("#".repeat(level) + " " + text);
+        } else if (typedNode.type === "text" && typedNode.text) {
+            lines.push(typedNode.text);
+        }
     }
-  }
 
-  return lines.join("\n\n");
+    return lines.join("\n\n");
 }
 
 // Initialize form when module is loaded
 watch(
-  module,
-  (newModule) => {
-    if (newModule) {
-      // Set title, description, icon
-      originalTitle.value = newModule.title || "";
-      originalDescription.value = newModule.description || "";
-      originalIcon.value = newModule.icon || "i-lucide-file";
-      contentType.value = newModule.content_type || "";
+    module,
+    (newModule) => {
+        if (newModule) {
+            // Set title, description, icon
+            originalTitle.value = newModule.title || "";
+            originalDescription.value = newModule.description || "";
+            originalIcon.value = newModule.icon || "i-lucide-file";
+            contentType.value = newModule.content_type || "";
 
-      title.value = originalTitle.value;
-      description.value = originalDescription.value;
-      icon.value = originalIcon.value;
+            title.value = originalTitle.value;
+            description.value = originalDescription.value;
+            icon.value = originalIcon.value;
 
-      // Extract and set content as Markdown
-      const markdownContent = extractMarkdownContent(newModule.content);
-      originalContent.value = markdownContent;
-      content.value = markdownContent;
-    }
-  },
-  { immediate: true },
+            // Extract and set content as Markdown
+            const markdownContent = extractMarkdownContent(newModule.content);
+            originalContent.value = markdownContent;
+            content.value = markdownContent;
+        }
+    },
+    { immediate: true },
 );
 
 // Set SEO meta
 useSeoMeta({
-  title: pageTitle,
-  description,
+    title: pageTitle,
+    description,
 });
 
 // Reset to original values
 function resetToDefaults() {
-  title.value = originalTitle.value;
-  description.value = originalDescription.value;
-  icon.value = originalIcon.value;
-  content.value = originalContent.value;
+    title.value = originalTitle.value;
+    description.value = originalDescription.value;
+    icon.value = originalIcon.value;
+    content.value = originalContent.value;
 }
 
 // Handle save
 async function handleSave() {
-  if (!title.value.trim()) {
-    toast.add({
-      title: "Validation Error",
-      description: "Please enter a module title",
-      icon: "i-lucide-alert-circle",
-      color: "error",
-    });
-    return;
-  }
-
-  loading.value = true;
-
-  try {
-    // Store content as Markdown string directly
-    const updateData = {
-      title: title.value.trim(),
-      description: description.value.trim(),
-      icon: icon.value,
-      content: contentType.value === "content" ? content.value : null,
-    };
-
-    const { error } = await supabase
-      .from("booklet_modules")
-      .update(updateData)
-      .eq("id", slug);
-
-    if (error) {
-      throw error;
+    if (!title.value.trim()) {
+        toast.add({
+            title: "Validation Error",
+            description: "Please enter a module title",
+            icon: "i-lucide-alert-circle",
+            color: "error",
+        });
+        return;
     }
 
-    // Refresh modules list
-    await getbooklet_modules();
+    loading.value = true;
 
-    // Update original values
-    originalTitle.value = title.value;
-    originalDescription.value = description.value;
-    originalIcon.value = icon.value;
-    originalContent.value = content.value;
+    try {
+        // Store content as Markdown string directly
+        const updateData = {
+            title: title.value.trim(),
+            description: description.value.trim(),
+            icon: icon.value,
+            content: contentType.value === "content" ? content.value : null,
+        };
 
-    toast.add({
-      title: "Success",
-      description: "Module saved successfully!",
-      icon: "i-lucide-check-circle",
-      color: "success",
-    });
-  } catch (error) {
-    console.error("Error saving module:", error);
-    toast.add({
-      title: "Error",
-      description: "Failed to save module. Please try again.",
-      icon: "i-lucide-alert-circle",
-      color: "error",
-    });
-  } finally {
-    loading.value = false;
-  }
+        const { error } = await supabase
+            .from("booklet_modules")
+            .update(updateData)
+            .eq("id", slug);
+
+        if (error) {
+            throw error;
+        }
+
+        // Refresh modules list
+        await getbooklet_modules();
+
+        // Update original values
+        originalTitle.value = title.value;
+        originalDescription.value = description.value;
+        originalIcon.value = icon.value;
+        originalContent.value = content.value;
+
+        toast.add({
+            title: "Success",
+            description: "Module saved successfully!",
+            icon: "i-lucide-check-circle",
+            color: "success",
+        });
+    } catch (error) {
+        console.error("Error saving module:", error);
+        toast.add({
+            title: "Error",
+            description: "Failed to save module. Please try again.",
+            icon: "i-lucide-alert-circle",
+            color: "error",
+        });
+    } finally {
+        loading.value = false;
+    }
 }
 </script>
 
 <template>
-  <div class="w-full space-y-4">
-    <!-- Error State -->
-    <template v-if="error">
-      <UCard class="border-error/20 bg-error/5">
-        <template #header>
-          <div class="flex items-center gap-2 text-error">
-            <UIcon name="i-lucide-alert-circle" />
-            <span class="font-semibold">Error loading module</span>
-          </div>
+    <div class="w-full space-y-4">
+        <!-- Error State -->
+        <template v-if="error">
+            <UCard class="border-error/20 bg-error/5">
+                <template #header>
+                    <div class="flex items-center gap-2 text-error">
+                        <UIcon name="i-lucide-alert-circle" />
+                        <span class="font-semibold">Error loading module</span>
+                    </div>
+                </template>
+                <p class="text-sm text-muted">{{ error.message }}</p>
+                <template #footer>
+                    <UButton
+                        :to="`/customize/modules/view`"
+                        icon="i-lucide-arrow-left"
+                        variant="outline"
+                        size="sm"
+                    >
+                        Back to Modules
+                    </UButton>
+                </template>
+            </UCard>
         </template>
-        <p class="text-sm text-muted">{{ error.message }}</p>
-        <template #footer>
-          <UButton
-            :to="`/customize/modules/view`"
-            icon="i-lucide-arrow-left"
-            variant="outline"
-            size="sm"
-          >
-            Back to Modules
-          </UButton>
+
+        <!-- Loading State -->
+        <template v-else-if="pending">
+            <div class="space-y-4">
+                <USkeleton class="h-10 w-full" />
+                <USkeleton class="h-10 w-full" />
+                <USkeleton class="h-10 w-full" />
+                <USkeleton class="h-64 w-full" />
+            </div>
         </template>
-      </UCard>
-    </template>
 
-    <!-- Loading State -->
-    <template v-else-if="pending">
-      <div class="space-y-4">
-        <USkeleton class="h-10 w-full" />
-        <USkeleton class="h-10 w-full" />
-        <USkeleton class="h-10 w-full" />
-        <USkeleton class="h-64 w-full" />
-      </div>
-    </template>
+        <!-- Form Content -->
+        <template v-else-if="module">
+            <!-- Form Fields -->
+            <ModuleFormFields
+                v-model:title="title"
+                v-model:description="description"
+                v-model:icon="icon"
+            />
 
-    <!-- Form Content -->
-    <template v-else-if="module">
-      <!-- Form Fields -->
-      <ModuleFormFields
-        v-model:title="title"
-        v-model:description="description"
-        v-model:icon="icon"
-      />
+            <!-- Editor for content modules -->
+            <template v-if="contentType === 'content'">
+                <UFormGroup label="Content">
+                    <Editor v-model="content" />
+                </UFormGroup>
+            </template>
+            <template v-else>
+                <div class="w-full p-4 bg-muted rounded-md text-muted">
+                    This is a {{ contentType }} module.
+                </div>
+            </template>
 
-      <!-- Editor for content modules -->
-      <template v-if="contentType === 'content'">
-        <UFormGroup label="Content">
-          <Editor v-model="content" />
-        </UFormGroup>
-      </template>
-      <template v-else>
-        <div class="w-full p-4 bg-muted rounded-md text-muted">
-          This is a {{ contentType }} module.
-        </div>
-      </template>
-
-      <!-- Save Bar -->
-      <div
-        class="flex items-center justify-between pt-4 border-t border-default"
-      >
-        <UButton
-          color="neutral"
-          variant="ghost"
-          icon="i-lucide-rotate-ccw"
-          :disabled="loading || !isDirty"
-          @click="resetToDefaults"
-        >
-          Reset to defaults
-        </UButton>
-        <div class="flex items-center gap-2">
-          <UButton
-            :to="`/customize/modules/view`"
-            icon="i-lucide-arrow-left"
-            variant="outline"
-            :disabled="loading"
-          >
-            Back
-          </UButton>
-          <UButton
-            color="primary"
-            icon="i-lucide-save"
-            :loading="loading"
-            :disabled="!isDirty || !title.trim()"
-            @click="handleSave"
-          >
-            Save Module
-          </UButton>
-        </div>
-      </div>
-    </template>
-  </div>
+            <!-- Save Bar -->
+            <div
+                class="flex items-center justify-between pt-4 border-t border-default"
+            >
+                <UButton
+                    color="neutral"
+                    variant="ghost"
+                    icon="i-lucide-rotate-ccw"
+                    :disabled="loading || !isDirty"
+                    @click="resetToDefaults"
+                >
+                    Reset to defaults
+                </UButton>
+                <div class="flex items-center gap-2">
+                    <UButton
+                        :to="`/customize/modules/view`"
+                        icon="i-lucide-arrow-left"
+                        variant="outline"
+                        :disabled="loading"
+                    >
+                        Back
+                    </UButton>
+                    <UButton
+                        color="primary"
+                        icon="i-lucide-save"
+                        :loading="loading"
+                        :disabled="!isDirty || !title.trim()"
+                        @click="handleSave"
+                    >
+                        Save Module
+                    </UButton>
+                </div>
+            </div>
+        </template>
+    </div>
 </template>
