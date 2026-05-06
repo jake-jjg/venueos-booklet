@@ -135,24 +135,48 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
 </script>
 
 <template>
-    <div class="flex flex-row" :key="route.path">
+    <header
+        class="bg-elevated z-50 border-b border-default flex justify-start w-full h-(--ui-header-height) items-center gap-2 py-4 pr-4"
+    >
+        <div class="shrink-0 flex items-center px-4">
+            <UButton
+                icon="i-lucide-panel-right"
+                color="neutral"
+                variant="ghost"
+                aria-label="Toggle sidebar"
+                @click="open = !open"
+            />
+        </div>
+        <div class="w-full">
+            <ClientOnly>
+                <template #fallback>
+                    <USkeleton class="h-7 w-48" />
+                </template>
+                <div class="text-2xl font-headline w-full">
+                    Booklet Settings
+                </div>
+            </ClientOnly>
+        </div>
+        <ClientOnly>
+            <template #fallback>
+                <USkeleton class="size-8 w-20 rounded-md shrink-0" />
+            </template>
+            <UColorModeSelect />
+        </ClientOnly>
+    </header>
+    <div
+        class="flex flex-row bg-elevated/50 h-[calc(100vh-var(--ui-header-height))"
+        :key="route.path"
+    >
         <USidebar
             v-model:open="open"
-            variant="sidebar"
+            variant="inset"
             collapsible="offcanvas"
             side="left"
             :ui="{
-                container: 'h-full bg-elevated/50 border-e border-default',
+                container: 'h-full  pt-16',
             }"
         >
-            <template #header>
-                <ClientOnly>
-                    <template #fallback>
-                        <USkeleton class="size-8 rounded-md" />
-                    </template>
-                    <UIcon name="i-logos-nuxt-icon" class="size-8" />
-                </ClientOnly>
-            </template>
             <ClientOnly>
                 <template #fallback>
                     <USkeleton class="h-8 w-full mb-0.5" />
@@ -176,41 +200,15 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
                 </UButton>
             </ClientOnly>
         </USidebar>
-        <main class="w-full flex flex-col justifystretch items-strech">
-            <header
-                class="border-b border-default flex justify-start w-full h-(--ui-header-height) items-center gap-2 py-4 pr-4"
-            >
-                <div class="shrink-0 flex items-center px-4">
-                    <UButton
-                        icon="i-lucide-panel-right"
-                        color="neutral"
-                        variant="ghost"
-                        aria-label="Toggle sidebar"
-                        @click="open = !open"
-                    />
-                </div>
-                <div class="w-full">
-                    <ClientOnly>
-                        <template #fallback>
-                            <USkeleton class="h-7 w-48" />
-                        </template>
-                        <div class="text-2xl font-headline w-full">
-                            Booklet Settings
-                        </div>
-                    </ClientOnly>
-                </div>
-                <ClientOnly>
-                    <template #fallback>
-                        <USkeleton class="size-8 w-20 rounded-md shrink-0" />
-                    </template>
-                    <UColorModeSelect />
-                </ClientOnly>
-            </header>
-            <div class="flex items-center p-4 w-full">
+        <main class="w-full flex flex-col justifystretch items-strech pl-4">
+            <div class="flex items-center w-full">
                 <UCard
-                    variant="outline"
-                    class="w-full"
-                    :ui="{ header: 'p-4 bg-elevated/50' }"
+                    variant="soft"
+                    class="w-full bg-default h-[calc(100vh-var(--ui-header-height))] shadow-lg rounded-none rounded-tl-3xl"
+                    :ui="{
+                        header: 'p-4',
+                        body: 'overflow-scroll h-[calc(100vh-165px)] pb-16',
+                    }"
                 >
                     <template #header>
                         <template v-if="!themeReady">
@@ -268,7 +266,7 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
                         </div>
                     </template>
                     <template v-else>
-                        <slot />
+                        <slot class="mh-full overflow-scroll" />
                     </template>
                 </UCard>
             </div>
@@ -289,7 +287,7 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
                         :icon="item.icon"
                         variant="outline"
                         size="lg"
-                        class="justify-start"
+                        class="justify-start ml-4"
                         @click="
                             () => {
                                 closeAddModuleSlideover();
