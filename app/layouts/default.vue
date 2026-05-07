@@ -11,7 +11,7 @@ const { title, description } = usePageHeader();
 const NavigationModules = computed(() =>
     (booklet_modules.value ?? []).map((item: any) => ({
         label: item.title,
-        icon: "i-lucide-" + item.icon,
+        icon: item.icon,
         to: "/" + item.title.toLowerCase() + "/",
         tooltip: { text: item.title, content: { side: "right" } },
     })),
