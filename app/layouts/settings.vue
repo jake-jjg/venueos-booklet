@@ -204,9 +204,9 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
             <div class="flex items-center w-full">
                 <UCard
                     variant="soft"
-                    class="w-full bg-white dark:bg-black z-30 h-[calc(100vh-var(--ui-header-height))] shadow-xl shadow-zinc-500/25 shadow- rounded-none rounded-tl-md"
+                    class="w-full bg-white dark:bg-black z-30 h-[calc(100vh-var(--ui-header-height))] shadow-xl shadow-zinc-500/25 shadow- rounded-none rounded-tl-xl"
                     :ui="{
-                        header: 'p-4',
+                        header: 'p-4 bg-muted border-none shadow-md shadow-zinc-500/10',
                         body: 'overflow-scroll h-[calc(100vh-165px)] pb-16',
                     }"
                 >

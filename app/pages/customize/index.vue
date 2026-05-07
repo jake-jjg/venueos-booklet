@@ -73,7 +73,13 @@ const getChangeIcon = (change: number) => {
         <!-- Stats Grid -->
         <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <!-- Page Views Stat -->
-            <UCard :ui="{ header: 'bg-elevated/50' }">
+            <UCard
+                class="w-full bg-white dark:bg-black border-muted border"
+                variant="soft"
+                :ui="{
+                    header: 'p-4 bg-muted border-none shadow-md shadow-zinc-500/10',
+                }"
+            >
                 <template #header>
                     <div class="flex items-center justify-between">
                         <span class="text-sm font-semibold text-muted"
@@ -108,7 +114,13 @@ const getChangeIcon = (change: number) => {
             </UCard>
 
             <!-- CTA Clicks Stat -->
-            <UCard :ui="{ header: 'bg-elevated/50' }">
+            <UCard
+                class="w-full bg-white dark:bg-black border-muted border"
+                variant="soft"
+                :ui="{
+                    header: 'p-4 bg-muted border-none shadow-md shadow-zinc-500/10',
+                }"
+            >
                 <template #header>
                     <div class="flex items-center justify-between">
                         <span class="text-sm font-semibold text-muted"
@@ -143,7 +155,13 @@ const getChangeIcon = (change: number) => {
             </UCard>
 
             <!-- Conversion Rate Stat -->
-            <UCard :ui="{ header: 'bg-elevated/50' }">
+            <UCard
+                class="w-full bg-white dark:bg-black border-muted border"
+                variant="soft"
+                :ui="{
+                    header: 'p-4 bg-muted border-none shadow-md shadow-zinc-500/10',
+                }"
+            >
                 <template #header>
                     <div class="flex items-center justify-between">
                         <span class="text-sm font-semibold text-muted"
@@ -182,7 +200,13 @@ const getChangeIcon = (change: number) => {
             </UCard>
 
             <!-- Average Session Duration Stat -->
-            <UCard :ui="{ header: 'bg-elevated/50' }">
+            <UCard
+                class="w-full bg-white dark:bg-black border-muted border"
+                variant="soft"
+                :ui="{
+                    header: 'p-4 bg-muted border-none shadow-md shadow-zinc-500/10',
+                }"
+            >
                 <template #header>
                     <div class="flex items-center justify-between">
                         <span class="text-sm font-semibold text-muted"
@@ -226,7 +250,13 @@ const getChangeIcon = (change: number) => {
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 my-4">
             <!-- Page Views Chart -->
             <div class="lg:col-span-2">
-                <UCard :ui="{ header: 'bg-elevated/50' }">
+                <UCard
+                    class="w-full bg-white dark:bg-black border-muted border"
+                    variant="soft"
+                    :ui="{
+                        header: 'p-4 bg-muted border-none shadow-md shadow-zinc-500/10',
+                    }"
+                >
                     <template #header>
                         <h3 class="text-lg font-headline">Page Views Trend</h3>
                     </template>
@@ -243,7 +273,13 @@ const getChangeIcon = (change: number) => {
 
             <!-- CTA Distribution -->
             <div>
-                <UCard :ui="{ header: 'bg-elevated/50' }">
+                <UCard
+                    class="w-full bg-white dark:bg-black border-muted border"
+                    variant="soft"
+                    :ui="{
+                        header: 'p-4 bg-muted border-none shadow-md shadow-zinc-500/10',
+                    }"
+                >
                     <template #header>
                         <h3 class="text-lg font-headline">CTA Distribution</h3>
                     </template>
@@ -260,7 +296,13 @@ const getChangeIcon = (change: number) => {
 
         <!-- Additional Metrics Table -->
         <div class="mt-4">
-            <UCard :ui="{ header: 'bg-elevated/50' }">
+            <UCard
+                class="w-full bg-white dark:bg-black border-muted border"
+                variant="soft"
+                :ui="{
+                    header: 'p-4 bg-muted border-none shadow-md shadow-zinc-500/10',
+                }"
+            >
                 <template #header>
                     <h3 class="text-lg font-headline">Top Performing Pages</h3>
                 </template>

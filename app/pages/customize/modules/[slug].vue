@@ -5,8 +5,15 @@ definePageMeta({
 
 const route = useRoute();
 const supabase = useSupabaseClient();
-const { booklet_modules, getbooklet_modules } = useVenue();
+const { booklet_modules, getbooklet_modules, venue_info } = useVenue();
 const { setPageHeader } = usePageHeader();
+
+// File upload composable
+const {
+    uploadFile,
+    uploading: uploadingFile,
+    error: uploadError,
+} = useStorageUpload();
 
 const slug = route.params.slug as string;
 const toast = useToast();
@@ -15,15 +22,21 @@ const toast = useToast();
 const title = ref("");
 const description = ref("");
 const icon = ref("i-lucide-file");
+const coverImage = ref("");
+const coverImageFile = ref<File | null>(null);
 const content = ref("");
 const loading = ref(false);
 const contentType = ref("");
+
+// Combined loading state
+const isLoading = computed(() => loading.value || uploadingFile.value);
 
 // Original values for dirty detection
 const originalTitle = ref("");
 const originalDescription = ref("");
 const originalIcon = ref("");
 const originalContent = ref("");
+const originalCoverImage = ref("");
 
 // Track dirty state
 const isDirty = computed(() => {
@@ -31,7 +44,9 @@ const isDirty = computed(() => {
         title.value !== originalTitle.value ||
         description.value !== originalDescription.value ||
         icon.value !== originalIcon.value ||
-        content.value !== originalContent.value
+        content.value !== originalContent.value ||
+        coverImage.value !== originalCoverImage.value ||
+        coverImageFile.value !== null
     );
 });
 
@@ -163,6 +178,10 @@ watch(
             const markdownContent = extractMarkdownContent(newModule.content);
             originalContent.value = markdownContent;
             content.value = markdownContent;
+
+            // Set cover image
+            originalCoverImage.value = newModule.cover_image_url || "";
+            coverImage.value = originalCoverImage.value;
         }
     },
     { immediate: true },
@@ -180,6 +199,8 @@ function resetToDefaults() {
     description.value = originalDescription.value;
     icon.value = originalIcon.value;
     content.value = originalContent.value;
+    coverImage.value = originalCoverImage.value;
+    coverImageFile.value = null;
 }
 
 // Handle save
@@ -197,12 +218,38 @@ async function handleSave() {
     loading.value = true;
 
     try {
+        let coverImageUrl = coverImage.value;
+
+        // Upload cover image if a new file was selected
+        if (coverImageFile.value) {
+            const venueName = venue_info.value[0]?.name || "venue";
+            const result = await uploadFile(
+                coverImageFile.value,
+                venueName,
+                "client-media",
+            );
+
+            if (result) {
+                coverImageUrl = result.url;
+            } else if (uploadError.value) {
+                toast.add({
+                    title: "Upload Error",
+                    description: uploadError.value,
+                    icon: "i-lucide-alert-circle",
+                    color: "error",
+                });
+                loading.value = false;
+                return;
+            }
+        }
+
         // Store content as Markdown string directly
         const updateData = {
             title: title.value.trim(),
             description: description.value.trim(),
             icon: icon.value,
             content: contentType.value === "content" ? content.value : null,
+            cover_image_url: coverImageUrl || null,
         };
 
         const { error } = await supabase
@@ -222,6 +269,9 @@ async function handleSave() {
         originalDescription.value = description.value;
         originalIcon.value = icon.value;
         originalContent.value = content.value;
+        originalCoverImage.value = coverImageUrl;
+        coverImage.value = coverImageUrl;
+        coverImageFile.value = null;
 
         toast.add({
             title: "Success",
@@ -285,12 +335,22 @@ async function handleSave() {
                 v-model:title="title"
                 v-model:description="description"
                 v-model:icon="icon"
+                v-model:coverImage="coverImage"
+                v-model:coverImageFile="coverImageFile"
             />
 
             <!-- Editor for content modules -->
             <template v-if="contentType === 'content'">
-                <UFormGroup label="Content">
-                    <Editor v-model="content" />
+                <UFormGroup label="Content"
+                    ><UCard
+                        class="w-full bg-white dark:bg-black border-muted border"
+                        variant="soft"
+                        :ui="{
+                            header: 'bg-muted border-none shadow-md shadow-zinc-500/10',
+                        }"
+                    >
+                        <Editor v-model="content" />
+                    </UCard>
                 </UFormGroup>
             </template>
             <template v-else>
@@ -307,7 +367,7 @@ async function handleSave() {
                     color="neutral"
                     variant="ghost"
                     icon="i-lucide-rotate-ccw"
-                    :disabled="loading || !isDirty"
+                    :disabled="isLoading || !isDirty"
                     @click="resetToDefaults"
                 >
                     Reset to defaults
@@ -317,14 +377,14 @@ async function handleSave() {
                         :to="`/customize/modules/view`"
                         icon="i-lucide-arrow-left"
                         variant="outline"
-                        :disabled="loading"
+                        :disabled="isLoading"
                     >
                         Back
                     </UButton>
                     <UButton
                         color="primary"
                         icon="i-lucide-save"
-                        :loading="loading"
+                        :loading="isLoading"
                         :disabled="!isDirty || !title.trim()"
                         @click="handleSave"
                     >

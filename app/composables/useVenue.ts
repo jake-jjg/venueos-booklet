@@ -8,6 +8,7 @@ interface BookletModule {
   module_position: number;
   content: Array<Record<string, unknown>> | null;
   content_type: string;
+  cover_image_url: string | null;
 }
 
 interface Venue {

@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@nuxt/a11y": "^1.0.0-alpha.1",
-    "@nuxt/eslint": "^1.15.2"
+    "@nuxt/eslint": "^1.15.2",
+    "@tailwindcss/typography": "^0.5.19"
   }
 }

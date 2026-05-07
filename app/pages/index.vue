@@ -30,10 +30,10 @@ useSeoMeta({
                         :description="module.description"
                         reverse="true"
                         spotlight
-                        :ui="{ title: 'text-xl font-headline', description: 'text-md font-body' }"
+                        :ui="{root: 'ring-0', spotlight: 'ring-0',  title: 'text-xl font-headline', description: 'text-md font-body' }"
                     >
-                        <template v-if="module.cover_img">
-                            <img :src="module.cover_img" :alt="module.title"></img>
+                        <template v-if="module.cover_image_url">
+                            <img :src="module.cover_image_url" :alt="module.title" class="object-cover aspect-[4/3] w-full rounded-md"></img>
                         </template>
                         <template v-else>
                             <img src="/placeholder.png" :alt="module.title"></img>

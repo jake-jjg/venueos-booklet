@@ -119,7 +119,15 @@ const pickers = [
     <div class="w-full flex flex-col gap-6">
         <!-- Color Pickers -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <UCard variant="subtle" v-for="picker in pickers" :key="picker.key">
+            <UCard
+                class="w-full bg-white dark:bg-black border-muted border"
+                variant="subtle"
+                v-for="picker in pickers"
+                :key="picker.key"
+                :ui="{
+                    header: 'p-4 bg-muted border-none shadow-md shadow-zinc-500/10',
+                }"
+            >
                 <template #header>
                     <div class="flex items-center gap-2">
                         <UIcon :name="picker.icon" class="size-4 text-muted" />
@@ -220,7 +228,13 @@ const pickers = [
         </div>
 
         <!-- Shade Scale Preview -->
-        <UCard variant="subtle">
+        <UCard
+            class="w-full bg-white dark:bg-black border-muted border"
+            variant="soft"
+            :ui="{
+                header: 'p-4 bg-muted border-none shadow-md shadow-zinc-500/10',
+            }"
+        >
             <template #header>
                 <h3 class="font-semibold text-sm">Generated Color Scales</h3>
             </template>
@@ -253,7 +267,13 @@ const pickers = [
         </UCard>
 
         <!-- Live Preview -->
-        <UCard variant="subtle">
+        <UCard
+            class="w-full bg-white dark:bg-black border-muted border"
+            variant="soft"
+            :ui="{
+                header: 'p-4 bg-muted border-none shadow-md shadow-zinc-500/10',
+            }"
+        >
             <template #header>
                 <h3 class="font-semibold text-sm">Live Preview</h3>
             </template>
