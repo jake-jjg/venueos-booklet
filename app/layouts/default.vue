@@ -30,16 +30,21 @@ const items = computed<NavigationMenuItem[]>(() => [
 
 <template>
     <header
-        class="bg-elevated z-50 border-b border-default flex justify-start w-full h-(--ui-header-height) items-center gap-2 py-4 pr-4"
+        class="bg-default z-20 flex justify-start w-full h-(--ui-header-height) items-center gap-2 py-4 pr-4 relative"
     >
         <div class="shrink-0 flex items-center px-4">
-            <UButton
-                icon="i-lucide-panel-right"
-                color="neutral"
-                variant="ghost"
-                aria-label="Toggle sidebar"
-                @click="open = !open"
-            />
+            <UTooltip
+                :content="open ? 'Collapse sidebar' : 'Expand sidebar'"
+                side="right"
+            >
+                <UButton
+                    icon="i-lucide-panel-right"
+                    color="neutral"
+                    variant="ghost"
+                    aria-label="Toggle sidebar"
+                    @click="open = !open"
+                />
+            </UTooltip>
         </div>
         <div class="w-full">
             <ClientOnly>
@@ -60,7 +65,7 @@ const items = computed<NavigationMenuItem[]>(() => [
     </header>
 
     <div
-        class="flex flex-row bg-elevated/50 h-[calc(100vh-var(--ui-header-height))"
+        class="flex bg-background flex-row h-[calc(100vh-var(--ui-header-height))"
         :key="route.path"
     >
         <USidebar
@@ -105,7 +110,7 @@ const items = computed<NavigationMenuItem[]>(() => [
             <div class="flex items-center w-full">
                 <UCard
                     variant="soft"
-                    class="w-full bg-default h-[calc(100vh-var(--ui-header-height))] shadow-lg rounded-none rounded-tl-3xl"
+                    class="w-full bg-white dark:bg-black z-30 h-[calc(100vh-var(--ui-header-height))] shadow-xl shadow-zinc-500/25 shadow- rounded-none rounded-tl-md"
                     :ui="{
                         header: 'p-4',
                         body: 'overflow-scroll h-[calc(100vh-165px)] pb-16',
