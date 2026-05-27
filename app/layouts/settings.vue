@@ -207,7 +207,7 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
                     class="w-full bg-white dark:bg-black z-30 h-[calc(100vh-var(--ui-header-height))] shadow-xl shadow-zinc-500/25 shadow- rounded-none rounded-tl-xl"
                     :ui="{
                         header: 'p-4 bg-muted border-none shadow-md shadow-zinc-500/10',
-                        body: 'overflow-scroll h-[calc(100vh-165px)] pb-16',
+                        body: 'overflow-scroll p-16 h-[calc(100vh-165px)]',
                     }"
                 >
                     <template #header>
@@ -266,7 +266,7 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
                         </div>
                     </template>
                     <template v-else>
-                        <slot class="mh-full overflow-scroll" />
+                        <slot class="mh-full p-16 overflow-scroll" />
                     </template>
                 </UCard>
             </div>
@@ -279,7 +279,7 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
             description="Choose a module type to get started"
         >
             <template #body>
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-3">
                     <UButton
                         v-for="item in addNewModuleItems"
                         :key="item.label"
@@ -287,7 +287,7 @@ const items: ComputedRef<NavigationMenuItem[]> = computed(() => [
                         :icon="item.icon"
                         variant="outline"
                         size="lg"
-                        class="justify-start ml-4"
+                        class="justify-start p-4"
                         @click="
                             () => {
                                 closeAddModuleSlideover();

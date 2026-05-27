@@ -2,12 +2,32 @@ export interface ThemeColors {
   primary: string;
   secondary: string;
   background: string;
+  headlineFont: string;
+  bodyFont: string;
+  headlineWeight: string;
+  bodyWeight: string;
+  headlineSize: string;
+  bodySize: string;
+  headlineSpacing: string;
+  bodySpacing: string;
+  headlineCase: string;
+  bodyCase: string;
 }
 
 export const DEFAULT_THEME_COLORS: ThemeColors = {
   primary: "#3b82f6",
   secondary: "#8b5cf6",
   background: "#ffffff",
+  headlineFont: "Inter",
+  bodyFont: "Inter",
+  headlineWeight: "700",
+  bodyWeight: "400",
+  headlineSize: "lg",
+  bodySize: "md",
+  headlineSpacing: "normal",
+  bodySpacing: "normal",
+  headlineCase: "none",
+  bodyCase: "none",
 };
 
 // HSL → hex helper
@@ -126,20 +146,48 @@ export function generateColorScale(hex: string): Record<number, string> {
 export const useTheme = () => {
   const supabase = useSupabaseClient();
   const config = useRuntimeConfig();
-
+  
   const themeReady = useState("theme_ready", () => false);
-
+  
   const colors = useState<ThemeColors>("theme_colors", () => ({
     ...DEFAULT_THEME_COLORS,
   }));
   const loading = useState("theme_loading", () => false);
 
-  const applyTheme = (themeColors: ThemeColors) => {
-    colors.value = { ...themeColors };
-
+  const loadFont = (fontFamily: string) => {
     if (!import.meta.client) return;
+    const linkId = `font-${fontFamily.replace(/\s+/g, '-')}`;
+    if (document.getElementById(linkId)) return;
 
-    const root = document.documentElement;
+    const link = document.createElement("link");
+    link.id = linkId;
+    link.rel = "stylesheet";
+    link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/\s+/g, '+')}:wght@400;700&display=swap`;
+    document.head.appendChild(link);
+  };
+
+    const applyTheme = (themeColors: ThemeColors) => {
+
+      colors.value = { ...themeColors };
+  
+      if (!import.meta.client) return;
+  
+      // Inject Google Fonts link
+      const fontLinkId = "dynamic-google-fonts";
+      let fontLink = document.getElementById(fontLinkId) as HTMLLinkElement | null;
+      if (!fontLink) {
+        fontLink = document.createElement("link");
+        fontLink.id = fontLinkId;
+        fontLink.rel = "stylesheet";
+        document.head.appendChild(fontLink);
+      }
+      const fonts = [themeColors.headlineFont, themeColors.bodyFont]
+        .map(f => f.replace(/\s+/g, '+'))
+        .join('&family=');
+      fontLink.href = `https://fonts.googleapis.com/css2?family=${fonts}:wght@100;200;300;400;500;600;700;800;900&display=swap`;
+  
+      const root = document.documentElement;
+
     const primaryScale = generateColorScale(themeColors.primary);
     const secondaryScale = generateColorScale(themeColors.secondary);
 
@@ -152,6 +200,17 @@ export const useTheme = () => {
 
     root.style.setProperty("--ui-primary", primaryScale[500]!);
     root.style.setProperty("--ui-secondary", secondaryScale[500]!);
+    
+    root.style.setProperty("--font-headline", `"${themeColors.headlineFont}", sans-serif`);
+    root.style.setProperty("--font-body", `"${themeColors.bodyFont}", sans-serif`);
+    root.style.setProperty("--font-headline-weight", themeColors.headlineWeight);
+    root.style.setProperty("--font-body-weight", themeColors.bodyWeight);
+    root.style.setProperty("--font-headline-size", themeColors.headlineSize);
+    root.style.setProperty("--font-body-size", themeColors.bodySize);
+    root.style.setProperty("--font-headline-spacing", themeColors.headlineSpacing);
+    root.style.setProperty("--font-body-spacing", themeColors.bodySpacing);
+    root.style.setProperty("--font-headline-case", themeColors.headlineCase);
+    root.style.setProperty("--font-body-case", themeColors.bodyCase);
 
     // Inject a single style tag covering all bg surface variables for both
     // light and dark modes. Must target :root/.light AND .dark to override
@@ -238,6 +297,7 @@ export const useTheme = () => {
     applyTheme,
     fetchTheme,
     saveTheme,
+    loadFont,
     generateColorScale,
     generateDarkBackground,
     generateBackgroundScale,

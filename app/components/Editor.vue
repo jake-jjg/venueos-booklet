@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { Emoji, gitHubEmojis } from "@tiptap/extension-emoji";
+import { TextAlign } from "@tiptap/extension-text-align";
+import { CodeBlockShiki } from "tiptap-extension-code-block-shiki";
+import { ImageUpload } from "./EditorImageUploadExtension";
+import { useEditorCompletion } from "./EditorUseCompletion";
+import EditorLinkPopover from "./EditorLinkPopover.vue";
 import type {
   EditorCustomHandlers,
   EditorToolbarItem,
@@ -7,15 +13,68 @@ import type {
   EditorEmojiMenuItem,
   DropdownMenuItem,
 } from "@nuxt/ui";
+
+const mentionItems: EditorMentionMenuItem[] = [
+  {
+    label: "benjamincanac",
+    avatar: {
+      src: "https://avatars.githubusercontent.com/u/739984?v=4",
+      loading: "lazy" as const,
+    },
+  },
+  {
+    label: "HugoRCD",
+    avatar: {
+      src: "https://avatars.githubusercontent.com/u/71938701?v=4",
+      loading: "lazy" as const,
+    },
+  },
+  {
+    label: "romhml",
+    avatar: {
+      src: "https://avatars.githubusercontent.com/u/25613751?v=4",
+      loading: "lazy" as const,
+    },
+  },
+  {
+    label: "sandros94",
+    avatar: {
+      src: "https://avatars.githubusercontent.com/u/13056429?v=4",
+      loading: "lazy" as const,
+    },
+  },
+  {
+    label: "hywax",
+    avatar: {
+      src: "https://avatars.githubusercontent.com/u/149865959?v=4",
+      loading: "lazy" as const,
+    },
+  },
+  {
+    label: "J-Michalek",
+    avatar: {
+      src: "https://avatars.githubusercontent.com/u/71264422?v=4",
+      loading: "lazy" as const,
+    },
+  },
+  {
+    label: "genu",
+    avatar: {
+      src: "https://avatars.githubusercontent.com/u/928780?v=4",
+      loading: "lazy" as const,
+    },
+  },
+];
+
+const emojiItems: EditorEmojiMenuItem[] = gitHubEmojis.filter(
+  (emoji) => !emoji.name.startsWith("regional_indicator_"),
+);
+
+<script setup lang="ts">
 import type { Editor, JSONContent } from "@tiptap/vue-3";
 import { upperFirst } from "scule";
 import { mapEditorItems } from "@nuxt/ui/utils/editor";
-import { Emoji, gitHubEmojis } from "@tiptap/extension-emoji";
-import { TextAlign } from "@tiptap/extension-text-align";
-import { CodeBlockShiki } from "tiptap-extension-code-block-shiki";
-import { ImageUpload } from "./EditorImageUploadExtension";
-import { useEditorCompletion } from "./EditorUseCompletion";
-import EditorLinkPopover from "./EditorLinkPopover.vue";
+
 
 const editorRef = useTemplateRef("editorRef");
 
@@ -423,7 +482,10 @@ const bubbleToolbarItems = computed(
     ] satisfies EditorToolbarItem<typeof customHandlers>[][],
 );
 
-const imageToolbarItems = (editor: Editor): EditorToolbarItem[][] => {
+const imageToolbarItems = computed(() => {
+  const editor = editorRef.value?.editor;
+  if (!editor) return [];
+
   const node = editor.state.doc.nodeAt(editor.state.selection.from);
 
   return [
@@ -477,7 +539,7 @@ const imageToolbarItems = (editor: Editor): EditorToolbarItem[][] => {
       },
     ],
   ];
-};
+});
 
 const selectedNode = ref<{ node: JSONContent; pos: number }>();
 
@@ -797,7 +859,8 @@ const emojiItems: EditorEmojiMenuItem[] = gitHubEmojis.filter(
 
     <UEditorToolbar
       :editor="editor"
-      :items="imageToolbarItems(editor)"
+      :items="imageToolbarItems"
+
       layout="bubble"
       :should-show="
         ({ editor, view }) => {

@@ -29,6 +29,7 @@ export default defineNuxtConfig({
       supabasePublishableKey: process.env.SUPABASE_PUBLISHABLE_KEY,
       venueId: process.env.VENUE_ID,
       siteUrl: process.env.SITE_URL,
+      googleFontsKey: process.env.GOOGLE_FONTS_API_KEY,
     },
   },
 });
